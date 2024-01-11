@@ -1,0 +1,9 @@
+.projor
+.projor/
+.projor/**
+
+packages/*/compiled/
+packages/*/types/
+packages/*/dist/
+
+node_modules/

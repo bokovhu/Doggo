@@ -1,0 +1,27 @@
+{
+    "name": "@alephhack/router",
+    "description": "The router component",
+    "version": "0.0.1",
+    "main": "compiled/index.js",
+    "types": "types/index.d.ts",
+    "private": true,
+    "dependencies": {
+        "react": "*",
+        "react-dom": "*",
+        "three": "*",
+        "rxjs": "*"
+    },
+    "devDependencies": {
+        "@types/three": "*",
+        "@types/react": "*",
+        "@types/react-dom": "*",
+        "typescript": "*",
+        "esbuild": "*"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w --preserveWatchOutput",
+        "start": "echo \"No start script provided\"",
+        "serve": "echo \"No serve script provided\""
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "name": "@alephhack/web",
+    "description": "The web distribution of the game",
+    "version": "0.0.1",
+    "main": "compiled/index.js",
+    "types": "types/index.d.ts",
+    "private": true,
+    "dependencies": {
+        "react": "*",
+        "react-dom": "*",
+        "three": "*",
+        "rxjs": "*",
+        "@alephhack/main-menu": "*",
+        "@alephhack/match": "*",
+        "@alephhack/inventory": "*",
+        "@alephhack/play": "*",
+        "@alephhack/train": "*",
+        "@alephhack/router": "*"
+
+    },
+    "devDependencies": {
+        "@types/three": "*",
+        "@types/react": "*",
+        "@types/react-dom": "*",
+        "typescript": "*",
+        "esbuild": "*"
+    },
+    "scripts": {
+        "build": "esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser",
+        "watch": "esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --watch",
+        "start": "echo \"No start script provided\"",
+        "serve": "esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --serve=0.0.0.0:8080 --servedir=dist"
+    }
+}
