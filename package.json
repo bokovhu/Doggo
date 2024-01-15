@@ -9,7 +9,8 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "three": "0.160.0",
-        "rxjs": "7.8.1"
+        "rxjs": "7.8.1",
+        "@brain/rl": "0.0.3"
     },
     "devDependencies": {
         "@types/react": "18.2.47",
