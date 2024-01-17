@@ -1,3 +1,4 @@
+import { AirplaneSurroundingObject } from "./AirplaneSurroundingObject";
 
 export interface AirplaneState {
     position: [number, number, number];
@@ -5,4 +6,5 @@ export interface AirplaneState {
     up: [number, number, number];
     forward: [number, number, number];
     right: [number, number, number];
+    surroundingObjects: Array<AirplaneSurroundingObject>;
 }

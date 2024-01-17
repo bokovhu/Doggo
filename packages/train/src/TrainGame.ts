@@ -3,14 +3,22 @@ import { IArena } from "./IArena";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Airplane } from './Airplane';
 import { Asteroid } from './Asteroid';
-import { TEST_AIRPLANE_AI } from './AirplaneAI';
-import { AIRPLANE_PARAMS, ASTEROID_VELOCITY_MAGNITUDE, CAMERA_ARENA_DISTANCE, CAMERA_FAR, CAMERA_FOV, CAMERA_NEAR, EXPLOSION_PARTICLE_COUNT, EXPLOSION_PARTICLE_VELOCITY_MAGNITUDE, SCENE_BACKGROUND_COLOR } from './constants';
+import { NN_AIRPLANE_AI, TEST_AIRPLANE_AI } from './AirplaneAI';
+import { AIRPLANE_PARAMS, ASTEROID_VELOCITY_MAGNITUDE, CAMERA_ARENA_DISTANCE, CAMERA_FAR, CAMERA_FOV, CAMERA_NEAR, EXPLOSION_PARTICLE_COUNT, EXPLOSION_PARTICLE_VELOCITY_MAGNITUDE, SCENE_BACKGROUND_COLOR, TIME_SCALE } from './constants';
 import { GameObject } from './GameObject';
 import { IAirplane } from './IAirplane';
 import { IAsteroid } from './IAsteroid';
 import { IWeaponBeam } from './IWeaponBeam';
 import { IExplosionParticle } from './IExplosionParticle';
 import { ExplosionParticle } from './ExplosionParticle';
+import { IEvolution } from './IEvolution';
+import { Evolution } from './Evolution';
+
+// const AIRPLANE_AI = TEST_AIRPLANE_AI;
+const AIRPLANE_AI = NN_AIRPLANE_AI;
+
+// Move evolution stuff here
+// Expose Observables for UI to subscribe to
 
 export class TrainGame implements IArena {
 
@@ -33,6 +41,8 @@ export class TrainGame implements IArena {
     private _asteroids: Array<IAsteroid> = [];
     private _weaponBeams: Array<IWeaponBeam> = [];
     private _explosionParticles: Array<IExplosionParticle> = [];
+    private _raycaster: THREE.Raycaster = new THREE.Raycaster();
+    private _evolution: IEvolution = new Evolution(this);
 
     constructor() {
         this._scene = new THREE.Scene();
@@ -90,10 +100,9 @@ export class TrainGame implements IArena {
 
     private onAnimationFrame() {
         const now = new Date().getTime();
-        const delta = (now - this._lastFrame) / 1000.0;
+        const delta = (now - this._lastFrame) / 1000.0 * TIME_SCALE;
         this._lastFrame = now;
 
-        this.assortObjects();
         this.updateGameLogic(delta);
 
         if (this._gameRunning) {
@@ -142,16 +151,32 @@ export class TrainGame implements IArena {
         }
     }
 
+    private spawnAsteroid() {
+        const asteroid = new Asteroid(this);
+
+        asteroid.position.set(
+            Math.random() * this.arenaSize.x - this.arenaSize.x / 2,
+            Math.random() * this.arenaSize.y - this.arenaSize.y / 2,
+            Math.random() * this.arenaSize.z - this.arenaSize.z / 2
+        );
+        asteroid.velocity.set(
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1,
+            Math.random() * 2 - 1
+        ).normalize().multiplyScalar(ASTEROID_VELOCITY_MAGNITUDE);
+
+        this.spawn(asteroid);
+    }
+
     private hitAsteroidsWithWeapons() {
-        const raycaster = new THREE.Raycaster();
         const asteroidObjects: Array<THREE.Object3D> = this._asteroids.map(asteroid => asteroid.object);
 
         for (let weaponBeam of this._weaponBeams) {
-            raycaster.set(
+            this._raycaster.set(
                 weaponBeam.origin,
                 weaponBeam.direction
             );
-            const intersections = raycaster.intersectObjects(asteroidObjects);
+            const intersections = this._raycaster.intersectObjects(asteroidObjects);
 
             if (intersections.length > 0) {
                 const asteroid = this._asteroids.find(
@@ -161,6 +186,7 @@ export class TrainGame implements IArena {
                 if (asteroid) {
                     asteroid.kill();
                     this.spawnExplosion(asteroid.position);
+                    this.spawnAsteroid();
                     console.log(`[TrainGame]`, `Asteroid killed`, asteroid.id);
                 }
             }
@@ -172,7 +198,6 @@ export class TrainGame implements IArena {
         this._arenaObjects = this._arenaObjects.filter(object => object.isAlive);
         deadObjects.forEach(object => {
             this._scene.remove(object.object);
-            console.log(`[TrainGame]`, `Removed dead object`, object.id);
         });
     }
 
@@ -180,6 +205,8 @@ export class TrainGame implements IArena {
         this._orbitControls.update();
 
         this._updateAccumulator += delta;
+
+        this.assortObjects();
 
         while (this._updateAccumulator >= this._airplaneTimestep) {
 
@@ -189,8 +216,14 @@ export class TrainGame implements IArena {
             // Hit asteroids with weapons
             this.hitAsteroidsWithWeapons();
 
+            // Update evolution
+            this._evolution.update(this._airplaneTimestep);
+
             // Remove game objects that are no longer alive
             this.removeDeadObjects();
+
+            // Assort objects again
+            this.assortObjects();
 
             this._updateAccumulator -= this._airplaneTimestep;
         }
@@ -216,7 +249,7 @@ export class TrainGame implements IArena {
         for (let i = 0; i < numPlanes; i++) {
             const airplane = new Airplane(
                 this,
-                TEST_AIRPLANE_AI,
+                AIRPLANE_AI,
                 AIRPLANE_PARAMS
             );
 
@@ -242,20 +275,7 @@ export class TrainGame implements IArena {
         const numAsteroids = 100;
 
         for (let i = 0; i < numAsteroids; i++) {
-            const asteroid = new Asteroid(this);
-
-            asteroid.position.set(
-                Math.random() * this.arenaSize.x - this.arenaSize.x / 2,
-                Math.random() * this.arenaSize.y - this.arenaSize.y / 2,
-                Math.random() * this.arenaSize.z - this.arenaSize.z / 2
-            );
-            asteroid.velocity.set(
-                Math.random() * 2 - 1,
-                Math.random() * 2 - 1,
-                Math.random() * 2 - 1
-            ).normalize().multiplyScalar(ASTEROID_VELOCITY_MAGNITUDE);
-
-            this.spawn(asteroid);
+            this.spawnAsteroid();
         }
     }
 

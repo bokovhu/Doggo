@@ -26,9 +26,9 @@
         "esbuild": "*"
     },
     "scripts": {
-        "build": "esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser",
-        "watch": "esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --watch",
+        "build": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser",
+        "watch": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --watch",
         "start": "echo \"No start script provided\"",
-        "serve": "esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --serve=0.0.0.0:8080 --servedir=dist"
+        "serve": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --serve=0.0.0.0:8080 --servedir=dist"
     }
 }

@@ -11,4 +11,8 @@ export interface IAirplane extends GameObject {
     readonly rotation: THREE.Quaternion;
     readonly ai: AirplaneAI;
     readonly state: AirplaneState;
+    readonly pendingScore: number;
+
+    addPendingScore(score: number): void;
+    clearPendingScore(): void;
 }

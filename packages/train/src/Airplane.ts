@@ -3,10 +3,12 @@ import { WeaponBeam } from './WeaponBeam';
 import { IArena } from './IArena';
 import { AirplaneAI } from './AirplaneAI';
 import { AirplaneParameters } from './AirplaneParameters';
-import { AIRPLANE_DIMENSIONS, AIRPLANE_SHOOTING_DELAY } from './constants';
+import { AIRPLANE_AI_SURROUNDINGS_TOP_K, AIRPLANE_DIMENSIONS, AIRPLANE_SHOOTING_DELAY } from './constants';
 import { AirplaneState } from './AirplaneState';
-import { GameObject, nextGameObjectId } from './GameObject';
+import { nextGameObjectId } from './GameObject';
 import { IAirplane } from './IAirplane';
+import { AirplaneControls } from './AirplaneControls';
+import { AirplaneSurroundingObject } from './AirplaneSurroundingObject';
 
 export class Airplane implements IAirplane {
 
@@ -20,6 +22,7 @@ export class Airplane implements IAirplane {
     private _object: THREE.Object3D = new THREE.Object3D();
     private _shootingCooldown: number = 0;
     private _isAlive: boolean = true;
+    private _pendingScore: number = 0;
 
     constructor(
         private _arena: IArena,
@@ -64,13 +67,55 @@ export class Airplane implements IAirplane {
         return this._ai;
     }
 
+    get pendingScore(): number {
+        return this._pendingScore;
+    }
+
     get state(): AirplaneState {
+        // Compute surrounding objects
+        const allSurroundingObjects: Array<AirplaneSurroundingObject> = [];
+        for (let asteroid of this._arena.asteroids) {
+            const direction = asteroid.position.clone().sub(this._position).normalize();
+            const distance = direction.length();
+            const velocity = asteroid.velocity.clone().normalize();
+            allSurroundingObjects.push({
+                active: 1,
+                direction: [direction.x, direction.y, direction.z],
+                distance,
+                velocity: [velocity.x, velocity.y, velocity.z]
+            });
+        }
+
+        allSurroundingObjects.sort((a, b) => a.distance - b.distance);
+
+        // Find 10 nearest objects
+        const nearestSurroundingObjects: Array<AirplaneSurroundingObject> = [];
+        for (let surroundingObject of allSurroundingObjects) {
+            if (nearestSurroundingObjects.length < AIRPLANE_AI_SURROUNDINGS_TOP_K) {
+                nearestSurroundingObjects.push(surroundingObject);
+            } else {
+                break;
+            }
+        }
+        if (nearestSurroundingObjects.length < AIRPLANE_AI_SURROUNDINGS_TOP_K) {
+            // Add inactive objects to fill up the array
+            for (let i = nearestSurroundingObjects.length; i < AIRPLANE_AI_SURROUNDINGS_TOP_K; i++) {
+                nearestSurroundingObjects.push({
+                    active: 0,
+                    direction: [0, 0, 0],
+                    distance: 99,
+                    velocity: [0, 0, 0]
+                });
+            }
+        }
+
         return {
             position: [this._position.x, this._position.y, this._position.z],
             velocity: this._velocity,
             up: [this._up.x, this._up.y, this._up.z],
             forward: [this._forward.x, this._forward.y, this._forward.z],
-            right: [this._right.x, this._right.y, this._right.z]
+            right: [this._right.x, this._right.y, this._right.z],
+            surroundingObjects: nearestSurroundingObjects
         };
     }
 
@@ -90,9 +135,17 @@ export class Airplane implements IAirplane {
         this._isAlive = false;
     }
 
+    private clampControls(controls: AirplaneControls): AirplaneControls {
+        return {
+            yaw: Math.max(-1, Math.min(1, controls.yaw)),
+            pitch: Math.max(-1, Math.min(1, controls.pitch)),
+            roll: Math.max(-1, Math.min(1, controls.roll))
+        };
+    }
+
     private updateMovement(delta: number) {
 
-        const controls = this._ai(this.state);
+        const controls = this.clampControls(this._ai.think(this.state));
 
         // Turning of aircraft
         const deltaYaw = new THREE.Quaternion().setFromAxisAngle(
@@ -161,6 +214,14 @@ export class Airplane implements IAirplane {
     public update(delta: number) {
         this.updateMovement(delta);
         this.updateShooting(delta);
+    }
+
+    public addPendingScore(score: number): void {
+        this._pendingScore += score;
+    }
+
+    public clearPendingScore(): void {
+        this._pendingScore = 0;
     }
 
     get kind(): string {

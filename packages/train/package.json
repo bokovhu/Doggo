@@ -10,8 +10,8 @@
         "react-dom": "*",
         "three": "*",
         "rxjs": "*",
-        "@alephhack/router": "*",
-        "@brain/rl": "*"
+        "@alephhack/router": "*"
+
     },
     "devDependencies": {
         "@types/three": "*",
