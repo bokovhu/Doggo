@@ -1,37 +1,36 @@
 {
-  "name": "aleph-hack-game-2024",
-  "version": "0.0.1",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "dependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "rxjs": "7.8.1",
-    "three": "0.160.0"
-  },
-  "devDependencies": {
-    "@types/react": "18.2.47",
-    "@types/react-dom": "18.2.18",
-    "@types/three": "0.160.0",
-    "concurrently": "8.2.2",
-    "electron": "28.1.1",
-    "esbuild": "0.19.11",
-    "typescript": "5.3.3",
-    "vitepress": "^1.0.0-rc.36"
-  },
-  "scripts": {
-    "build:lib": "npm run -w @alephhack/router build && npm run -w @alephhack/main-menu build && npm run -w @alephhack/match build && npm run -w @alephhack/inventory build && npm run -w @alephhack/train build && npm run -w @alephhack/play build",
-    "build:product": "npm run -w @alephhack/web build && npm run -w @alephhack/electron build",
-    "build": "npm run build:lib && npm run build:product",
-    "watch:lib": "concurrently \"npm run -w @alephhack/router watch\" \"npm run -w @alephhack/main-menu watch\" \"npm run -w @alephhack/match watch\" \"npm run -w @alephhack/inventory watch\" \"npm run -w @alephhack/train watch\" \"npm run -w @alephhack/play watch\"",
-    "watch:product": "concurrently \"npm run -w @alephhack/web watch\" \"npm run -w @alephhack/electron watch\"",
-    "watch": "concurrently \"npm run watch:lib\" \"npm run watch:product\"",
-    "serve:product": "concurrently \"npm run -w @alephhack/web serve\" \"npm run -w @alephhack/electron serve\"",
-    "serve": "npm run serve:product",
-    "docs:dev": "vitepress dev packages/docs",
-    "docs:build": "vitepress build packages/docs",
-    "docs:preview": "vitepress preview packages/docs"
-  }
+    "name": "aleph-hack-game-2024",
+    "version": "0.0.1",
+    "private": true,
+    "workspaces": [
+        "packages/*"
+    ],
+    "dependencies": {
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "three": "0.160.0",
+        "rxjs": "7.8.1"
+    },
+    "devDependencies": {
+        "@types/react": "18.2.47",
+        "@types/react-dom": "18.2.18",
+        "@types/three": "0.160.0",
+        "concurrently": "8.2.2",
+        "esbuild": "0.19.11",
+        "typescript": "5.3.3",
+        "electron": "28.1.1"
+    },
+    "scripts": {
+        "build:lib": "npm run -w @alephhack/router build && npm run -w @alephhack/main-menu build && npm run -w @alephhack/match build && npm run -w @alephhack/inventory build && npm run -w @alephhack/train build && npm run -w @alephhack/play build && npm run -w @alephhack/ai build",
+        "build:product": "npm run -w @alephhack/web build && npm run -w @alephhack/electron build",
+        "build": "npm run build:lib && npm run build:product",
+        "watch:lib": "concurrently \"npm run -w @alephhack/router watch\" \"npm run -w @alephhack/main-menu watch\" \"npm run -w @alephhack/match watch\" \"npm run -w @alephhack/inventory watch\" \"npm run -w @alephhack/train watch\" \"npm run -w @alephhack/play watch\" \"npm run -w @alephhack/ai watch\"",
+        "watch:product": "concurrently \"npm run -w @alephhack/web watch\" \"npm run -w @alephhack/electron watch\"",
+        "watch": "concurrently \"npm run watch:lib\" \"npm run watch:product\"",
+        "serve:product": "concurrently \"npm run -w @alephhack/web serve\" \"npm run -w @alephhack/electron serve\"",
+        "serve": "npm run serve:product",
+        "docs:dev": "vitepress dev packages/docs",
+        "docs:build": "vitepress build packages/docs",
+        "docs:preview": "vitepress preview packages/docs"
+    }
 }

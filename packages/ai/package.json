@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/play",
-    "description": "The play component",
+    "name": "@doggo/ai",
+    "description": "The AI component",
     "version": "0.0.1",
     "main": "compiled/index.js",
     "types": "types/index.d.ts",
@@ -9,9 +9,7 @@
         "react": "*",
         "react-dom": "*",
         "three": "*",
-        "rxjs": "*",
-        "@alephhack/router": "*"
-
+        "rxjs": "*"
     },
     "devDependencies": {
         "@types/three": "*",

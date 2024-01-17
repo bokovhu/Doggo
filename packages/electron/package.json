@@ -1,5 +1,5 @@
 {
-    "name": "@alephhack/electron",
+    "name": "@doggo/electron",
     "description": "The electron distribution of the game",
     "version": "0.0.1",
     "main": "compiled/index.js",
