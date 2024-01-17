@@ -1,9 +1,18 @@
 import { defineConfig } from 'vitepress'
+import tasklist from 'markdown-it-task-lists'
+import markdownItTextualUml from 'markdown-it-textual-uml';
 
 export default defineConfig({
-  title: "Dogo",
+  title: "Doggo",
   description: "Dogfighting Simulation",
   head: [['link', { rel: 'icon', href: 'https://i.ibb.co/F6NMTSd/DALL-E-2024-01-11-17-03-47-A-playful-and-engaging-logo-for-a-simulation-game-application-named-Dogo.png' }]],
+  markdown: {
+    config: (md) => {
+      md
+        .use(markdownItTextualUml)
+        .use(tasklist)
+    }
+  },
   themeConfig: {
     nav: [
       { text: 'Intro', link: '/01-Intro/01-Summary' },
@@ -32,7 +41,7 @@ export default defineConfig({
       },
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/bokovhu/aleph-hack-2024-game' }
+      { icon: 'github', link: 'https://github.com/bokovhu/doggo' }
     ]
   }
 })
