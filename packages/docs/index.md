@@ -10,7 +10,7 @@ hero:
   actions:
     - theme: brand
       text: Read here
-      link: /markdown-examples
+      link: /01-Intro/01-Summary
     - theme: alt
       text: Video
       link: https://www.youtube.com/watch?v=dQw4w9WgXcQ

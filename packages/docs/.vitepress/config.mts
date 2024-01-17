@@ -10,7 +10,6 @@ export default defineConfig({
       { text: 'Main', link: '/02-Main/00-Overview' },
       { text: 'Outro', link: '/03-Outro/01-Summary' },
     ],
-
     logo: "https://i.ibb.co/F6NMTSd/DALL-E-2024-01-11-17-03-47-A-playful-and-engaging-logo-for-a-simulation-game-application-named-Dogo.png",
     sidebar: [
       {
