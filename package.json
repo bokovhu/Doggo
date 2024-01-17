@@ -18,7 +18,8 @@
         "concurrently": "8.2.2",
         "esbuild": "0.19.11",
         "typescript": "5.3.3",
-        "electron": "28.1.1"
+        "electron": "28.1.1",
+        "vitepress": "1.0.0-rc.39"
     },
     "scripts": {
         "build:lib": "npm run -w @alephhack/router build && npm run -w @alephhack/main-menu build && npm run -w @alephhack/match build && npm run -w @alephhack/inventory build && npm run -w @alephhack/train build && npm run -w @alephhack/play build && npm run -w @alephhack/ai build",
@@ -29,8 +30,8 @@
         "watch": "concurrently \"npm run watch:lib\" \"npm run watch:product\"",
         "serve:product": "concurrently \"npm run -w @alephhack/web serve\" \"npm run -w @alephhack/electron serve\"",
         "serve": "npm run serve:product",
-        "docs:dev": "vitepress dev packages/docs",
-        "docs:build": "vitepress build packages/docs",
-        "docs:preview": "vitepress preview packages/docs"
+        "docs:dev": "npm run -w @doggo/docs dev",
+        "docs:build": "npm run -w @doggo/docs build",
+        "docs:preview": "npm run -w @doggo/docs preview"
     }
 }
