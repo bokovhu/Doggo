@@ -2,7 +2,7 @@
 <img src="https://i.ibb.co/F6NMTSd/DALL-E-2024-01-11-17-03-47-A-playful-and-engaging-logo-for-a-simulation-game-application-named-Dogo.png" alt="logo" width="120" height="120" />
 </div>
 
-<h3 align="center">Dogo</h3>
+<h3 align="center">Doggo</h3>
   <p align="center">
   Aleph Hack
         <br />
@@ -12,7 +12,7 @@
     ·
     <a href="">Youtube</a>
     ·
-    <a href="https://github.com/bokovhu/aleph-hack-2024-game">Code</a>
+    <a href="https://github.com/bokovhu/doggo">Code</a>
   </p>
 </div>
 
@@ -30,10 +30,9 @@ w.i.p
 
 w.i.p
 
-
 ## Team
 
-| Name          | Discord   | Telegram   | E-mail                 |
-| :------------ | :-------- | :--------- | :--------------------- |
-| Frank Dierolf | frankbevr | @frankbevr | `frank_dierolf@web.de` |
-| Botond Kovacs | -         | -          | `-`                    |
+| Name          | Discord   | Telegram   | E-mail                        |
+| :------------ | :-------- | :--------- | :---------------------------- |
+| Frank Dierolf | frankbevr | @frankbevr | `frank_dierolf@web.de`        |
+| Botond Kovacs | -         | -          | `botondjanoskovacs@gmail.com` |

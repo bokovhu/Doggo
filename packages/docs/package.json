@@ -1,5 +1,5 @@
 {
-  "name": "@dogo/docs",
+  "name": "@doggo/docs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,5 +10,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "markdown-it-task-lists": "^2.1.1",
+    "markdown-it-textual-uml": "^0.17.1"
+  }
 }
