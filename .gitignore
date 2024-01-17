@@ -7,3 +7,5 @@ packages/*/types/
 packages/*/dist/
 
 node_modules/
+packages/docs/.vitepress/dist
+packages/docs/.vitepress/cache
