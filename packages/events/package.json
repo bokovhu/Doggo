@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/ai",
-    "description": "The AI components and systems",
+    "name": "@doggo/events",
+    "description": "The events component",
     "version": "0.0.1",
     "main": "compiled/index.js",
     "types": "types/index.d.ts",
@@ -13,10 +13,7 @@
         "brain.js": "*",
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
-        "@polkadot/extension-dapp": "*",
-        "@doggo/ecs": "*",
-        "@doggo/events": "*"
-
+        "@polkadot/extension-dapp": "*"
     },
     "devDependencies": {
         "@types/three": "*",

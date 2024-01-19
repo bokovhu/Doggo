@@ -24,6 +24,10 @@ Milestones for Doggo were not planned ahead of time, so this document contains t
 
 _🪧 Milestone 1_
 
+:::warning
+This list must be rewritten.
+:::
+
 * Architecture assembled
 * PWA manifest
 * Basic UI with the following options:
@@ -39,6 +43,8 @@ _🪧 Milestone 1_
     * `@doggo/contracts` - The smart contracts package, which contains the smart contracts for the game **NOT IMPLEMENTED**
     * `@doggo/docs` - The documentation package, which contains the documentation for the game
     * `@doggo/events` - Events package for decoupling different actors of the game
+    * `@doggo/ecs` - The Entity-Component-System package, which contains the ECS types and interfaces
+    * `@doggo/base-game` - Abstract game class for init & THREE.js setup & ECS impl
     * `@doggo/ai` - The AI package, which contains AI-stuff (running & training code)
     * `@doggo/airplane` - The airplane package, which contains the airplane game object
     * `@doggo/asteroid` - The asteroid package, which contains the asteroid game object
@@ -80,6 +86,33 @@ _🪧 Milestone 3_
 * YouTube Video
 * Testing
 
+## Building
+
+:::info
+To build `Doggo`, you need to have a couple of build dependencies satisfied. We begin explanation of the build process by building a _new local development environment from scratch_ first. We do this in _WSL / Ubuntu_, using a fresh _rootfs installation_, but you should be able to do this in _any Linux distribution_.
+:::
+
+:::warning
+This section needs to be completed:
+
+* Same instructions as for `Deploy Cash`
+* Add `python3` to `apt-get install` command
+* Add `apt-get -y install python-is-python3`
+* Add `apt-get -y install pkgconf`
+* Add `apt-get -y install mesa-utils` (check if really needed)
+* Add `apt-get -y install libx11-dev libxi-dev libxext-dev`
+* Add `apt-get -y install libglx-dev`
+* Add `apt-get -y install libgl-dev`
+:::
+
+:::::details Creating a new WSL distro for Doggo development
+* We begin our journey by acquiring the latest Ubuntu rootfs `tar.gz` file. We use this one:
+
+```
+https://cloud-images.ubuntu.com/wsl/jammy/20240117/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz
+```
+:::::
+
 ## Packages
 
 :::info
@@ -106,6 +139,67 @@ It contains the web application package, which is the game itself. It is a PWA, 
 ### `@doggo/app`
 
 It contains the `<App />` component of the application, which is the _first page_ of the application (main menu).
+
+### `@doggo/events`
+
+Contains the _event system_ for the game. It defines the `EventPublisher` interface for publishing events from game logic. It defines the `EventSubscriber` interface for subscribing to events from game logic.
+
+The package also defines all events that can be emitted from game logic:
+
+* `PlayerJoined` - emitted for each player at the beginning of the game
+* `CardPlayed` - played at the beginning of the game when a card is played at
+* `SquadSpawned` - played from the squads that are spawned from cards
+* `UnitSpawned` - played from the units that are spawned from squads
+* `UnitHit` - emitted, when a plane hits another plane
+* `UnitKilled` - emitted, when a plane is killed
+* `UnitAlive` - emitted regularly, when a plane is alive
+
+### `@doggo/ecs`
+
+It contains the _Entity-Component-System_ implementation for the game. It defines the `Entity` class, which is a universal game object. Entities contain _components_, which are _data_ that is attached to the entity. Component data can be _read_ and _written_ by the _systems_ of the game, which contain the _game logic_.
+
+Key points of this ECS implementation:
+
+* Accessing components of entities should be fast
+* Finding entities with given type of components should be fast
+* Implement _prefab system_ for creating entities from prefabs
+* Hierarchical entities?
+* Integrate well with scene management
+* Integrate well with resource management
+
+### `@doggo/airplane`
+
+This package contains the `AirplaneSystem` class. It is responsible for _simulating the physics and controls_ of airplanes in the game.
+
+Each airplane is characterized in the simulation by the `AirplaneState` interface:
+
+```ts
+interface AirplaneState {
+    /** The position of the airplane in the world */
+    position: THREE.Vector3;
+    /** The rotation of the airplane in the world */
+    rotation: THREE.Quaternion;
+    /** The velocity of the airplane in the world */
+    velocity: Vector3;
+    /** The angular velocity of the airplane in the world */
+    angularVelocity: Vector3;
+    /** The controls of the airplane */
+    controls: AirplaneControls;
+}
+```
+
+Airplanes are controlled using the following interface:
+
+```ts
+interface AirplaneControls {
+    /** In range [-1; 1], how much to yaw the plane (Up-axis rotation) */
+    yaw: number;
+    /** In range [-1; 1], how much to pitch the plane (Right-axis rotation) */
+    pitch: number;
+    /** In range [-1; 1], how much to roll the plane (Forward-axis rotation) */
+    roll: number;
+}
+```
 
 ### `@doggo/app-training`
 

@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/ai",
-    "description": "The AI components and systems",
+    "name": "@doggo/airplane",
+    "description": "The Airplane components and systems",
     "version": "0.0.1",
     "main": "compiled/index.js",
     "types": "types/index.d.ts",

@@ -9,7 +9,11 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "three": "0.160.0",
-        "rxjs": "7.8.1"
+        "rxjs": "7.8.1",
+        "brain.js": "2.0.0-beta.23",
+        "@polkadot/api": "10.11.2",
+        "@polkadot/api-contract": "10.11.2",
+        "@polkadot/extension-dapp": "0.46.6"
     },
     "devDependencies": {
         "@types/react": "18.2.47",
@@ -18,20 +22,21 @@
         "concurrently": "8.2.2",
         "esbuild": "0.19.11",
         "typescript": "5.3.3",
-        "electron": "28.1.1",
-        "vitepress": "1.0.0-rc.39"
+        "electron": "28.1.1"
     },
     "scripts": {
-        "build:lib": "npm run -w @alephhack/router build && npm run -w @alephhack/main-menu build && npm run -w @alephhack/match build && npm run -w @alephhack/inventory build && npm run -w @alephhack/train build && npm run -w @alephhack/play build && npm run -w @alephhack/ai build",
-        "build:product": "npm run -w @alephhack/web build && npm run -w @alephhack/electron build",
-        "build": "npm run build:lib && npm run build:product",
-        "watch:lib": "concurrently \"npm run -w @alephhack/router watch\" \"npm run -w @alephhack/main-menu watch\" \"npm run -w @alephhack/match watch\" \"npm run -w @alephhack/inventory watch\" \"npm run -w @alephhack/train watch\" \"npm run -w @alephhack/play watch\" \"npm run -w @alephhack/ai watch\"",
-        "watch:product": "concurrently \"npm run -w @alephhack/web watch\" \"npm run -w @alephhack/electron watch\"",
+        "build:lib": "npm run -w @doggo/router build && npm run -w @doggo/app-main-menu build && npm run -w @doggo/app-inventory build && npm run -w @doggo/app-train build && npm run -w @doggo/app-match build && npm run -w @doggo/app-play build && npm run -w @doggo/app-trade build && npm run -w @doggo/app-social build && npm run -w @doggo/app-challenges build && npm run -w @doggo/app-mint build && npm run -w @doggo/app-become-member build && npm run -w @doggo/app-check-membership build && npm run -w @doggo/ecs build && npm run -w @doggo/events build && npm run -w @doggo/base-game build && npm run -w @doggo/arena build && npm run -w @doggo/explosion build && npm run -w @doggo/airplane build && npm run -w @doggo/ai build && npm run -w @doggo/match-game build && npm run -w @doggo/training-game build",
+        "build:product": "npm run -w @doggo/web build && npm run -w @doggo/electron build",
+        "build": "npm run build:contracts && npm run build:lib && npm run build:product",
+        "watch:lib": "concurrently \"npm run -w @doggo/router watch\" \"npm run -w @doggo/app-main-menu watch\" \"npm run -w @doggo/app-inventory watch\" \"npm run -w @doggo/app-train watch\" \"npm run -w @doggo/app-match watch\" \"npm run -w @doggo/app-play watch\" \"npm run -w @doggo/app-trade watch\" \"npm run -w @doggo/app-social watch\" \"npm run -w @doggo/app-challenges watch\" \"npm run -w @doggo/app-mint watch\" \"npm run -w @doggo/app-become-member watch\" \"npm run -w @doggo/app-check-membership watch\" \"npm run -w @doggo/ecs watch\" \"npm run -w @doggo/events watch\" \"npm run -w @doggo/base-game watch\" \"npm run -w @doggo/arena watch\" \"npm run -w @doggo/explosion watch\" \"npm run -w @doggo/airplane watch\" \"npm run -w @doggo/ai watch\" \"npm run -w @doggo/match-game watch\" \"npm run -w @doggo/training-game watch\"",
+        "watch:product": "concurrently \"npm run -w @doggo/web watch\" \"npm run -w @doggo/electron watch\"",
         "watch": "concurrently \"npm run watch:lib\" \"npm run watch:product\"",
-        "serve:product": "concurrently \"npm run -w @alephhack/web serve\" \"npm run -w @alephhack/electron serve\"",
+        "serve:product": "concurrently \"npm run -w @doggo/web serve\" \"npm run -w @doggo/electron serve\"",
         "serve": "npm run serve:product",
         "docs:dev": "npm run -w @doggo/docs dev",
         "docs:build": "npm run -w @doggo/docs build",
-        "docs:preview": "npm run -w @doggo/docs preview"
+        "docs:preview": "npm run -w @doggo/docs preview",
+        "build:contracts": "npm run -w @doggo/contracts build",
+        "serve:node": "npm run -w @doggo/contracts node"
     }
 }

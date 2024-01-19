@@ -5,15 +5,15 @@ import {
     useEffect
 } from "react";
 
-import "@alephhack/main-menu";
-import "@alephhack/match";
-import "@alephhack/play";
-import "@alephhack/train";
-import "@alephhack/inventory";
+import "@doggo/app-main-menu";
+import "@doggo/app-match";
+import "@doggo/app-play";
+import "@doggo/app-train";
+import "@doggo/app-inventory";
 import {
     $router,
     RouterView
-} from "@alephhack/router";
+} from "@doggo/router";
 
 function App() {
     useEffect(

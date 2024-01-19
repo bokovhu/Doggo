@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/ai",
-    "description": "The AI components and systems",
+    "name": "@doggo/explosion",
+    "description": "The Explosion components and systems",
     "version": "0.0.1",
     "main": "compiled/index.js",
     "types": "types/index.d.ts",

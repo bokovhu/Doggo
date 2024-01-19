@@ -1,0 +1,13 @@
+{
+    "name": "@doggo/contracts",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {},
+    "devDependencies": {},
+    "scripts": {
+        "node": "substrate-contracts-node --dev --base-path ./.node-data",
+        "cargo:contract-build": "cargo contract build --target wasm --release --manifest-path src/doggo/Cargo.toml",
+        "cargo:build": "cargo build --release",
+        "build": "npm run cargo:build && npm run cargo:contract-build"
+    }
+}

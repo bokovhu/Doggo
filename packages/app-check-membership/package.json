@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/ai",
-    "description": "The AI components and systems",
+    "name": "@doggo/app-check-membership",
+    "description": "The check membership component",
     "version": "0.0.1",
     "main": "compiled/index.js",
     "types": "types/index.d.ts",
@@ -14,8 +14,7 @@
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
         "@polkadot/extension-dapp": "*",
-        "@doggo/ecs": "*",
-        "@doggo/events": "*"
+        "@doggo/router": "*"
 
     },
     "devDependencies": {

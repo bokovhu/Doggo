@@ -10,12 +10,16 @@
         "react-dom": "*",
         "three": "*",
         "rxjs": "*",
-        "@alephhack/main-menu": "*",
-        "@alephhack/match": "*",
-        "@alephhack/inventory": "*",
-        "@alephhack/play": "*",
-        "@alephhack/train": "*",
-        "@alephhack/router": "*"
+        "brain.js": "*",
+        "@polkadot/api": "*",
+        "@polkadot/api-contract": "*",
+        "@polkadot/extension-dapp": "*",
+        "@doggo/app-main-menu": "*",
+        "@doggo/app-match": "*",
+        "@doggo/app-inventory": "*",
+        "@doggo/app-play": "*",
+        "@doggo/app-train": "*",
+        "@doggo/router": "*"
 
     },
     "devDependencies": {

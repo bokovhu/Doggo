@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/ai",
-    "description": "The AI components and systems",
+    "name": "@doggo/training-game",
+    "description": "The TrainingGame class",
     "version": "0.0.1",
     "main": "compiled/index.js",
     "types": "types/index.d.ts",
@@ -14,8 +14,11 @@
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
         "@polkadot/extension-dapp": "*",
-        "@doggo/ecs": "*",
-        "@doggo/events": "*"
+        "@doggo/base-game": "*",
+        "@doggo/arena": "*",
+        "@doggo/explosion": "*",
+        "@doggo/airplane": "*",
+        "@doggo/ai": "*"
 
     },
     "devDependencies": {
