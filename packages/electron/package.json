@@ -3,7 +3,6 @@
     "description": "The electron distribution of the game",
     "version": "0.0.1",
     "main": "compiled/index.js",
-    "types": "types/index.d.ts",
     "private": true,
     "dependencies": {
         "react": "*",
@@ -20,12 +19,14 @@
         "@types/react": "*",
         "@types/react-dom": "*",
         "typescript": "*",
-        "esbuild": "*"
+        "esbuild": "*",
+        "del-cli": "*"
     },
     "scripts": {
         "build": "echo \"Electron build script not implemented\"",
         "watch": "echo \"Electron watch script not implemented\"",
         "start": "echo \"No start script provided\"",
-        "serve": "echo \"No serve script provided\""
+        "serve": "echo \"No serve script provided\"",
+        "clean": "del compiled types dist target build"
     }
 }

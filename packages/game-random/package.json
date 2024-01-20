@@ -1,6 +1,6 @@
 {
-    "name": "@doggo/explosion",
-    "description": "The Explosion components and systems",
+    "name": "@doggo/game-random",
+    "description": "The random number generator component",
     "version": "0.0.1",
     "main": "src/index.ts",
     "private": true,
@@ -12,10 +12,7 @@
         "brain.js": "*",
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
-        "@polkadot/extension-dapp": "*",
-        "@doggo/ecs": "*",
-        "@doggo/events": "*"
-
+        "@polkadot/extension-dapp": "*"
     },
     "devDependencies": {
         "@types/three": "*",

@@ -1,6 +1,6 @@
 import { $registerRoute, $router } from "@doggo/router";
 import { Ref, useEffect, useRef } from "react";
-import { TrainGame } from "./TrainGame";
+import { TrainingGame } from "@doggo/training-game";
 
 interface TrainingUIOpts {
     game: Ref<TrainGame | undefined>;
@@ -18,13 +18,15 @@ function TrainingUI(
 
 export function Train() {
 
-    const gameRef = useRef<TrainGame>();
+    const gameRef = useRef<TrainingGame>();
 
     useEffect(
         () => {
             console.log(`[Train]`, `Starting game`);
-            gameRef.current = new TrainGame();
-            gameRef.current.start();
+            gameRef.current = new TrainingGame();
+            gameRef.current.start(
+                document.getElementById('game')!
+            );
             return () => {
                 console.log(`[Train]`, `Stopping game`);
                 gameRef.current?.stop();

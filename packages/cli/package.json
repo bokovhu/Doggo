@@ -1,8 +1,8 @@
 {
-    "name": "@doggo/explosion",
-    "description": "The Explosion components and systems",
+    "name": "@doggo/cli",
+    "description": "The cli distribution of the game",
     "version": "0.0.1",
-    "main": "src/index.ts",
+    "main": "compiled/index.js",
     "private": true,
     "dependencies": {
         "react": "*",
@@ -13,8 +13,7 @@
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
         "@polkadot/extension-dapp": "*",
-        "@doggo/ecs": "*",
-        "@doggo/events": "*"
+        "@doggo/card-game": "*"
 
     },
     "devDependencies": {
@@ -26,9 +25,9 @@
         "del-cli": "*"
     },
     "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w --preserveWatchOutput",
-        "start": "echo \"No start script provided\"",
+        "build": "esbuild src/index.ts --bundle --sourcemap --outdir=dist --platform=node",
+        "watch": "esbuild src/index.ts --bundle --sourcemap --outdir=dist --platform=node --watch",
+        "start": "node dist/index.js",
         "serve": "echo \"No serve script provided\"",
         "clean": "del compiled types dist target build"
     }

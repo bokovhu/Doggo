@@ -10,6 +10,12 @@ import "@doggo/app-match";
 import "@doggo/app-play";
 import "@doggo/app-train";
 import "@doggo/app-inventory";
+import "@doggo/app-trade";
+import "@doggo/app-mint";
+import "@doggo/app-social";
+import "@doggo/app-become-member";
+import "@doggo/app-check-membership";
+import "@doggo/app-challenges";
 import {
     $router,
     RouterView
@@ -18,8 +24,8 @@ import {
 function App() {
     useEffect(
         () => {
-            console.log(`[App]`, `Routing to main-menu`);
-            $router.goto('main-menu');
+            console.log(`[App]`, `Routing to check-membership`);
+            $router.goto('check-membership');
         },
         []
     );

@@ -1,4 +1,6 @@
+import { EventBus } from '@doggo/events';
 import * as THREE from 'three';
+export * from "./component-type";
 
 /** A component, which is a piece of data with a type for game logic. */
 export interface Component<T> {
@@ -24,7 +26,7 @@ export interface Entity {
     readonly id: number;
 
     /** Whether or not the entity is alive. */
-    readonly alive: boolean;
+    alive: boolean;
 
     /** The entity's components. */
     readonly components: EntityComponents;
@@ -47,7 +49,7 @@ export interface HostGeometries {
 
 export interface SpawnEntityOpts {
     position?: THREE.Vector3;
-    rotation?: THREE.Euler;
+    rotation?: THREE.Quaternion;
     parentId?: number;
     components?: Array<Component<any>>;
 }
@@ -55,7 +57,8 @@ export interface SpawnEntityOpts {
 /** The game host, as visible to systems, which implement the game logic. */
 export interface GameHost {
     readonly geometries: HostGeometries;
-    readonly entities: IterableIterator<Entity>;
+    readonly entities: Array<Entity>;
+    readonly eventBus: EventBus;
 
     spawn(opts: SpawnEntityOpts): Entity;
     kill(id: number): void;

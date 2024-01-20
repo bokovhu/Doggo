@@ -2,8 +2,7 @@
     "name": "@doggo/app-become-member",
     "description": "The become member component",
     "version": "0.0.1",
-    "main": "compiled/index.js",
-    "types": "types/index.d.ts",
+    "main": "src/index.tsx",
     "private": true,
     "dependencies": {
         "react": "*",
@@ -22,12 +21,14 @@
         "@types/react": "*",
         "@types/react-dom": "*",
         "typescript": "*",
-        "esbuild": "*"
+        "esbuild": "*",
+        "del-cli": "*"
     },
     "scripts": {
         "build": "tsc",
         "watch": "tsc -w --preserveWatchOutput",
         "start": "echo \"No start script provided\"",
-        "serve": "echo \"No serve script provided\""
+        "serve": "echo \"No serve script provided\"",
+        "clean": "del compiled types dist target build"
     }
 }

@@ -2,12 +2,18 @@
     "name": "@doggo/contracts",
     "version": "0.0.1",
     "private": true,
+    "main": "src/index.ts",
     "dependencies": {},
-    "devDependencies": {},
+    "devDependencies": {
+        "concurrently": "*"
+    },
     "scripts": {
         "node": "substrate-contracts-node --dev --base-path ./.node-data",
         "cargo:contract-build": "cargo contract build --target wasm --release --manifest-path src/doggo/Cargo.toml",
         "cargo:build": "cargo build --release",
-        "build": "npm run cargo:build && npm run cargo:contract-build"
+        "cargo:watch": "cargo watch -x \"contract build --target wasm --release --manifest-path src/doggo/Cargo.toml\"",
+        "build": "npm run cargo:build && npm run cargo:contract-build",
+        "watch": "npm run cargo:watch",
+        "dev": "concurrently \"npm run node\" \"npm run watch\""
     }
 }

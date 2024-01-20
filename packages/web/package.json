@@ -3,7 +3,6 @@
     "description": "The web distribution of the game",
     "version": "0.0.1",
     "main": "compiled/index.js",
-    "types": "types/index.d.ts",
     "private": true,
     "dependencies": {
         "react": "*",
@@ -19,6 +18,12 @@
         "@doggo/app-inventory": "*",
         "@doggo/app-play": "*",
         "@doggo/app-train": "*",
+        "@doggo/app-trade": "*",
+        "@doggo/app-social": "*",
+        "@doggo/app-challenges": "*",
+        "@doggo/app-mint": "*",
+        "@doggo/app-become-member": "*",
+        "@doggo/app-check-membership": "*",
         "@doggo/router": "*"
 
     },
@@ -27,12 +32,14 @@
         "@types/react": "*",
         "@types/react-dom": "*",
         "typescript": "*",
-        "esbuild": "*"
+        "esbuild": "*",
+        "del-cli": "*"
     },
     "scripts": {
         "build": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser",
         "watch": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --watch",
         "start": "echo \"No start script provided\"",
-        "serve": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --serve=0.0.0.0:8080 --servedir=dist"
+        "serve": "node scripts/before-build.js && esbuild src/index.tsx --bundle --jsx=automatic --loader:.js=jsx --sourcemap --outdir=dist --platform=browser --serve=0.0.0.0:8080 --servedir=dist",
+        "clean": "del compiled types dist target build"
     }
 }
