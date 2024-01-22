@@ -1,5 +1,5 @@
 
-export type UnitKind = "fighter" | "supply" | "heal";
+export type UnitKind = "fighter" | "helicopter" | "bomber";
 export type GameCardKind = "spawn" | "effect" | "nothing";
 export type EffectTarget = "this-plane" | // Effect is applied to the plane, that the effect is attached to
     "all-own-planes" | // Effect is applied to all own planes
@@ -66,28 +66,20 @@ export interface GameCardSpawnDetails {
     /** The card's generated attributes for the combat simulation */
     attributes: {
         /** The airplane's health.
-         * 
-         * * Fighter: [50; 200]
-         * * Supply: [100; 500]
-         * * Heal: [50; 500]
          */
-        health: number;
+        hp: number;
 
         /** The airplane's attack power.
-         * 
-         * * Fighter: [1; 10]
-         * * Supply: 0
-         * * Heal: 0
          */
-        attack: number;
+        ap: number;
 
         /** The airplane's manouverability.
-         * 
-         * * Fighter: [1; 10]
-         * * Supply: [1; 3]
-         * * Heal: [1; 5]
          */
-        manouverability: number;
+        man: number;
+
+        /** The airplane's defense power.
+         */
+        dp: number;
     };
 
     /** The card's generated effects, that are added to the plane's that are spawned. */
@@ -99,9 +91,14 @@ export interface GameCardEffectDetails {
     effects: Array<GameEffect & { activation: CardEffectActivation }>;
 }
 
+export type GameCardRarity = "common" | "rare" | "legendary";
+
 export interface GameCard {
     /** The 32-bit unsigned integer ID of the card (also the seed) */
     id: number;
+
+    /** The card's rarity */
+    rarity: GameCardRarity;
 
     /** The card's kind */
     kind: GameCardKind;
@@ -153,6 +150,7 @@ export type GameEventKind = "begin-game" | // The game begins
     "add-to-playing-deck" | // A card is added to the playing deck
     "shuffle-playing-deck" | // The playing deck is shuffled
     "play-card" | // A card is played from the top of the playing deck
+    "spawn-n-units" | // N units are spawned
     "spawn-unit" | // A unit is spawned
     "activate-effect" | // An effect is activated
     "change-hp" | // A unit's HP is changed
@@ -164,6 +162,7 @@ export type GameEventKind = "begin-game" | // The game begins
     "attack-unit" | // A unit is attacked
     "kill-unit" | // A unit is killed
     "reinforce" | // The playing deck is extended with a player's reinforcement card
+    "shuffle-units" | // The units are shuffled
     "win"; // A player wins the match
 
 export interface GameEvent {
@@ -183,12 +182,23 @@ export interface GameEvent {
     data: any;
 }
 
+export interface PlayerCommand {
+    /** The card that is selected by the player. */
+    card: GameCard;
+
+    /** The target column in which the card's units will be spawned. */
+    column?: "A" | "B" | "C" | "D" | "E" | "F";
+}
+
 export interface GameMatch {
     /** The seed of the match */
     seed: number;
 
     /** The number of the player who won the match */
     winner: number;
+
+    /** The commands of the players */
+    commands: Array<Array<PlayerCommand>>;
 
     /** The turns of the match */
     events: Array<GameEvent>;

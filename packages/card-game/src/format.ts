@@ -1,4 +1,4 @@
-import { EffectActivation, EffectKind, EffectTarget, GameCard, GameEffect, GameEvent, GameEventKind, GameMatch, Unit } from "./model";
+import { EffectActivation, EffectKind, EffectTarget, GameCard, GameEffect, GameEvent, GameEventKind, GameMatch, PlayerCommand, Unit } from "./model";
 
 function formatCardArray(cards: Array<GameCard>) {
     return cards.map((card, index) => `* **${index + 1}** (\`${card.id}\`): ${formatCardDescription(card)}`).join("\n");
@@ -42,32 +42,43 @@ const targetDescriptions: Record<EffectTarget, (eff: GameEffect) => string> = {
 const eventKindDescription: Record<GameEventKind, (ev: GameEvent) => string> = {
     "begin-game": ev => `# The game begins`,
     "begin-turn": ev => `## Turn ${ev.turn} begins`,
-    "commit-commands": ev => `:::details Player ${ev.player} commits their commands\n${formatCardArray(ev.data.cards)}\n:::`,
-    "add-to-playing-deck": ev => `:::details Player ${ev.player} adds a card to the playing deck\n${formatCardDescription(ev.data.card)}\n:::`,
+    "commit-commands": ev => `:::details Player ${ev.player} commits their commands\n${formatPlayerCommandArray(ev.data.commands)}\n:::`,
+    "add-to-playing-deck": ev => `:::details Player ${ev.player} adds a card to the playing deck\n${formatCardDescription(ev.data.command.card)}\n:::`,
     "shuffle-playing-deck": ev => `**The playing deck is shuffled.**`,
-    "play-card": ev => `:::details Player ${ev.player} plays a card\n${formatCardDescription(ev.data.card)}\n:::`,
-    "spawn-unit": ev => `:::details Player ${ev.player} spawns a unit\n${formatUnitDescription(ev.data.unit)}\n:::`,
+    "play-card": ev => `:::::details Player ${ev.player} plays a card\n${formatCardDescription(ev.data.card)}\n:::::`,
+    "spawn-n-units": ev => `:::details Player ${ev.player} spawns ${ev.data.units.length} units\n${formatUnitArray(ev.data.units)}\n:::`,
+    // "spawn-unit": ev => `:::details Player ${ev.player} spawns a unit\n${formatUnitDescription(ev.data.unit)}\n:::`,
+    "spawn-unit": ev => `\n`,
     "move-unit": ev => `:::details Player ${ev.player} moves a unit\n:::`,
-    "target-unit": ev => `:::details Player ${ev.player} targets a unit\n:::`,
-    "attack-unit": ev => `:::details Player ${ev.player} attacks a unit\n:::`,
-    "kill-unit": ev => `:::details Player ${ev.player} kills a unit\n:::`,
+    "target-unit": ev => `:::::details Player ${ev.player} targets a unit\n:::info _Attacker_\n${formatUnitDescription(ev.data.unit)}\n:::\n:::danger _Target_\n${formatUnitDescription(ev.data.target)}\n:::\n:::::`,
+    "attack-unit": ev => `:::::details Player ${ev.player} attacks a unit\n:::info _Attacker_\n${formatUnitDescription(ev.data.unit)}\n:::\n:::danger _Target_\n${formatUnitDescription(ev.data.target)}\n:::\n:::info Damage\n_Damage Roll_: **${ev.data.damageRoll}**\n\n_Evasion Roll_: **${ev.data.evasionRoll}**\n\n_Damage Pool_ (_AP * Damage Roll_): **${ev.data.damagePool}**\n\n_Evasion Reduction_ (_MAN * Evasion Roll_): **${ev.data.evasionReduction}**\n\n_Target DP_: **${ev.data.target.dp}**\n\n_Applied Damage_: **${ev.data.appliedDamage}** (**${ev.data.hpBefore}** -> **${ev.data.hpAfter}**)\n:::\n:::::`,
+    "kill-unit": ev => `:::details Player ${ev.player} kills a unit\n${formatUnitDescription(ev.data.unit)}\n:::`,
     "reinforce": ev => `:::details Player ${ev.player} reinforces their playing deck\n:::`,
     "change-hp": ev => `:::details Player ${ev.player} changes a unit's HP\n:::`,
     "change-ap": ev => `:::details Player ${ev.player} changes a unit's AP\n:::`,
     "change-dp": ev => `:::details Player ${ev.player} changes a unit's DP\n:::`,
     "change-man": ev => `:::details Player ${ev.player} changes a unit's MAN\n:::`,
     "activate-effect": ev => `:::details Player ${ev.player} activates an effect\n${formatEffectDescription(ev.data.effect)}\n:::`,
-    "win": ev => `**Player ${ev.player} wins the match${ev.data && ev.data.reason ? ` - ${ev.data.reason}` : ""}**`
+    "win": ev => `**Player ${ev.player} wins the match${ev.data && ev.data.reason ? ` - ${ev.data.reason}` : ""}**`,
+    "shuffle-units": ev => `**The units are shuffled.**`,
 };
 
 export function formatUnitDescription(unit: Unit) {
-    return `A ${unit.kind} at \`(${unit.position[0]}, ${unit.position[1]})\` with **${unit.hp} HP** | **${unit.ap} AP** | **${unit.dp} DP** | **${unit.man} MAN**${unit.target === -1 ? " (no target)" : ` (${unit.target})`}`;
+    return `A **${unit.kind}** with **${unit.hp} HP** | **${unit.ap} AP** | **${unit.dp} DP** | **${unit.man} MAN**${unit.target === -1 ? " (no target)" : ` (${unit.target})`}`;
+}
+
+export function formatUnitArray(units: Array<Unit>) {
+    return units.map(u => `* **${u.id}**: ${formatUnitDescription(u)}`).join("\n");
 }
 
 export function formatEffectDescription(effect: GameEffect) {
 
     const activationDescription = activationDescriptions[effect.activation](effect);
-    const kindDescription = kindDescriptions[effect.kind](effect).toLowerCase();
+    const kindDescription = kindDescriptions[effect.kind](effect).toLowerCase()
+        .replace(" ap ", " **AP** ")
+        .replace(" dp ", " **DP** ")
+        .replace(" man ", " **MAN** ")
+        .replace(" hp ", " **HP** ");
     const targetDescription = targetDescriptions[effect.target](effect).toLowerCase();
 
     return `${activationDescription}, ${kindDescription} to ${targetDescription}.`;
@@ -75,8 +86,10 @@ export function formatEffectDescription(effect: GameEffect) {
 
 export function formatCardDescription(card: GameCard) {
 
+    const rarity = `[${card.rarity}] `;
+
     if (card.kind === "spawn") {
-        let result = `SPAWN | Spawns **${card.spawnDetails!.amount}** plane(s) of the **${card.spawnDetails!.kind}** kind`;
+        let result = `Spawns **${card.spawnDetails!.amount}** plane(s) of the **${card.spawnDetails!.kind}** kind`;
 
         if (card.spawnDetails!.effects.length > 0) {
             for (const effect of card.spawnDetails!.effects) {
@@ -84,9 +97,9 @@ export function formatCardDescription(card: GameCard) {
             }
         }
 
-        return result;
+        return rarity + result;
     } else if (card.kind === "effect") {
-        let result = `EFFECT | `;
+        let result = ``;
 
         if (card.effectDetails!.effects.length > 0) {
             for (const effect of card.effectDetails!.effects) {
@@ -94,9 +107,9 @@ export function formatCardDescription(card: GameCard) {
             }
         }
 
-        return result;
+        return rarity + result;
     } else {
-        return "NOTHING | Does nothing";
+        return rarity + "Does nothing";
     }
 
 }
@@ -108,5 +121,20 @@ export function formatGameEvent(event: GameEvent) {
 
 export function formatGameMatch(match: GameMatch) {
     const formattedEvents = match.events.map(formatGameEvent).join("\n\n");
-    return `# Match ${match.seed}\n\nWinner: Player ${match.winner}\n\n${formattedEvents}`;
+    const formattedWinner = match.winner === 0 ? `Tie` : `Winner: Player ${match.winner}`;
+    return `# Match ${match.seed}\n\n${formattedWinner}\n\n${formattedEvents}`;
+}
+
+export function formatPlayerCommand(command: PlayerCommand) {
+    if (command.column === undefined) {
+        return `Play card ${command.card.id} - ${formatCardDescription(command.card)}`;
+    } else {
+        return `Play card ${command.card.id} in column ${command.column} - ${formatCardDescription(command.card)}`;
+    }
+}
+
+export function formatPlayerCommandArray(commands: Array<PlayerCommand>) {
+    return commands.map(
+        (cmd, index) => `* **${index + 1}**: ${formatPlayerCommand(cmd)}`
+    ).join("\n");
 }
