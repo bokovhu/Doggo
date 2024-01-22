@@ -12,7 +12,8 @@
         "brain.js": "*",
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
-        "@polkadot/extension-dapp": "*"
+        "@polkadot/extension-dapp": "*",
+        "commander": "*"
     },
     "devDependencies": {
         "@types/three": "*",

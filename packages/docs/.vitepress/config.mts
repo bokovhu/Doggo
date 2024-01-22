@@ -32,6 +32,7 @@ export default defineConfig({
         items: [
           { text: 'Overview', link: '/02-Main/00-Overview' },
           { text: 'Milestone 1', link: '/02-Main/01-Milestone/01-Journal' },
+          { text: 'Test Match', link: '/02-Main/01-Milestone/02-Test-Match' },
         ]
       },
       {

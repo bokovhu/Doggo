@@ -13,6 +13,7 @@
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
         "@polkadot/extension-dapp": "*",
+        "commander": "*",
         "@doggo/app-main-menu": "*",
         "@doggo/app-match": "*",
         "@doggo/app-inventory": "*",
