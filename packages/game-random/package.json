@@ -13,12 +13,15 @@
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
         "@polkadot/extension-dapp": "*",
-        "commander": "*"
+        "commander": "*",
+        "marked": "*",
+        "marked-terminal": "*"
     },
     "devDependencies": {
         "@types/three": "*",
         "@types/react": "*",
         "@types/react-dom": "*",
+        "@types/marked-terminal": "*",
         "typescript": "*",
         "esbuild": "*",
         "del-cli": "*"

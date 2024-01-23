@@ -14,6 +14,8 @@
         "@polkadot/api-contract": "*",
         "@polkadot/extension-dapp": "*",
         "commander": "*",
+        "marked": "*",
+        "marked-terminal": "*",
         "@doggo/game-random": "*"
 
     },
@@ -21,6 +23,7 @@
         "@types/three": "*",
         "@types/react": "*",
         "@types/react-dom": "*",
+        "@types/marked-terminal": "*",
         "typescript": "*",
         "esbuild": "*",
         "del-cli": "*"
