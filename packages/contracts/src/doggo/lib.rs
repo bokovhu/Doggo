@@ -1,42 +1,23 @@
 #![cfg_attr(not(feature = "std"), no_std, no_main)]
 
+pub mod contract;
+
 #[ink::contract]
 pub mod doggo {
-    // Custom error types
-    #[derive(scale::Encode, scale::Decode, Debug, PartialEq, Eq, Copy, Clone)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
-    pub enum Error {
-        // Emitted, when no other error fits
-        Unspecified,
-
-        // Emitted, when the owner is already set
-        OwnerIsAlreadySet,
-
-        // Emitted, when the user should be an owner, but isn't
-        NotTheOwner,
-
-        // Emitted, when not enough native tokens were sent in the call
-        NotEnoughBalance,
-
-        // Emitted, when the card ID is invalid
-        InvalidCardId,
-
-        // Emitted, when the caller is not the owner of the card
-        NotTheCardOwner,
-
-        // Emitted, when the caller is not a member
-        NotAMember,
-    }
+    use crate::contract::generated::Error;
 
     #[ink(storage)]
     pub struct DoggoContract {
         // Variables for game ownership
         owner: AccountId, // Owner of the contract
         owner_set: bool, // Flag to check if owner has been set
+        owner_name: ink::prelude::string::String, // Name of the owner
 
         // Game membership
         membership_price: Balance, // Price to become a member
         membership_status: ink::storage::Mapping<AccountId, bool>, // Maps address to membership status
+        member_names: ink::storage::Mapping<AccountId, ink::prelude::string::String>, // Maps address to member name
+        some_vec: ink::prelude::vec::Vec<u32>,
 
         // Variables for Game Card mechanisms
         card_minting_price: Balance, // Price to mint a new card
@@ -53,13 +34,18 @@ pub mod doggo {
             let card_owner_mapping = ink::storage::Mapping::default();
             let membership_status = ink::storage::Mapping::default();
             let cards_of_owner_mapping = ink::storage::Mapping::default();
+            let member_names_mapping = ink::storage::Mapping::default();
+            let some_vec_init = ink::prelude::vec::Vec::new();
 
             Self {
                 owner: AccountId::from([0xFF as u8; 32]),
                 owner_set: false,
+                owner_name: ink::prelude::string::String::from(""),
 
                 membership_price: 0,
                 membership_status: membership_status,
+                member_names: member_names_mapping,
+                some_vec: some_vec_init,
 
                 card_minting_price: 0,
                 card_id_counter: 0,
@@ -226,5 +212,18 @@ pub mod doggo {
             Ok(())
         }
 
+        /// Hello, world endpoint for development purposes
+        #[ink(message)]
+        pub fn hello_world(&self) -> Result<u32, Error> {
+            Ok(42)
+        }
+
+        /// Hello, world error endpoint for development purposes
+        #[ink(message)]
+        pub fn hello_world_error(&self) -> Result<(), Error> {
+            Err(Error::DevelopmentError)
+        }
+
     }
+
 }

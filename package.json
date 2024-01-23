@@ -30,23 +30,24 @@
         "del-cli": "5.1.0"
     },
     "scripts": {
-        "build:lib": "npm run -w @doggo/game-random build && npm run -w @doggo/card-game build",
+        "build:lib": "npm run -w @doggo/contracts build && npm run -w @doggo/game-random build && npm run -w @doggo/card-game build",
         "build:product": "npm run -w @doggo/cli build",
-        "build": "npm run build:contracts && npm run build:product",
-        "watch:lib": "concurrently \"npm run -w @doggo/game-random watch\" \"npm run -w @doggo/card-game watch\"",
-        "watch:product": "concurrently \"npm run -w @doggo/cli watch\"",
-        "watch": "npm run build:contracts && npm run watch:product",
-        "clean:lib": "concurrently \"npm run -w @doggo/game-random clean\" \"npm run -w @doggo/card-game clean\"",
+        "build:docs": "npm run -w @doggo/docs build",
+        "build": "npm run build:lib && npm run build:product && npm run build:docs",
+        "watch:lib": "concurrently \"npm run -w @doggo/contracts watch\" \"npm run -w @doggo/game-random watch\" \"npm run -w @doggo/card-game watch\" -n \"contracts,game-random,card-game\"",
+        "watch:product": "concurrently \"npm run -w @doggo/cli watch\" -n \"cli\"",
+        "watch:docs": "npm run -w @doggo/docs dev",
+        "watch": "concurrently \"npm run watch:lib\" \"npm run watch:product\" \"npm run watch:docs\" -n \"lib,product,docs\"",
+        "clean:lib": "concurrently \"npm run -w @doggo/contracts clean\" \"npm run -w @doggo/game-random clean\" \"npm run -w @doggo/card-game clean\"",
         "clean:product": "concurrently \"npm run -w @doggo/cli clean\"",
         "clean": "concurrently \"npm run clean:lib\" \"npm run clean:product\"",
         "serve:product": "concurrently \"npm run -w @doggo/cli serve\"",
         "serve": "npm run serve:product",
-        "docs:dev": "npm run -w @doggo/docs dev",
-        "docs:build": "npm run -w @doggo/docs build",
-        "docs:preview": "npm run -w @doggo/docs preview",
-        "build:contracts": "npm run -w @doggo/contracts build",
-        "serve:node": "npm run -w @doggo/contracts node",
-        "contracts:dev": "npm run -w @doggo/contracts dev",
-        "cardgame:test": "npm run -w @doggo/cli start -- simulate 1,2,3,4,5,6 11,12,13,14,15,16 --seed 123 --output ../docs/02-Main/01-Milestone/02-Test-Match.md && npm run -w @doggo/cli start -- card-table 0 5000 --output ../docs/02-Main/01-Milestone/03-First-5000-Cards.md && npm run -w @doggo/cli start -- simulate 1,2,3,4,5,6 11,12,13,14,15,16 --seed 456 --output ../docs/02-Main/01-Milestone/02-Test-Match-456.md && npm run -w @doggo/cli start -- card 1337 && npm run -w @doggo/cli start -- simulate 999991,999992,999993 999994,999995,999996 --seed 789 --output ../docs/02-Main/01-Milestone/04-Test-Match-789.md && npm run -w @doggo/cli start -- card-table 0 5000 --output ../docs/02-Main/01-Milestone/05-Second-5000-Cards.md && npm run -w @doggo/cli start -- simulate 99991,99992,99993 99994,99995,99996 --seed 987 --spit-out"
+        "cli": "npm run -w @doggo/cli start",
+        "dev:lib": "concurrently \"npm run -w @doggo/contracts dev\" \"npm run -w @doggo/game-random dev\" \"npm run -w @doggo/card-game dev\" -n \"contracts,game-random,card-game\"",
+        "dev:dev-node-contract": "npm run -w @doggo/contracts serve",
+        "dev:product": "concurrently \"npm run -w @doggo/cli dev\" -n \"cli\"",
+        "dev:docs": "npm run -w @doggo/docs dev",
+        "dev": "concurrently \"npm run dev:lib\" \"npm run dev:product\" \"npm run dev:docs\" \"npm run dev:dev-node-contract\" -n \"lib,product,docs,dev-node-contract\""
     }
 }

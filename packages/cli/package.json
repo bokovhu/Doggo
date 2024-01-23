@@ -33,6 +33,7 @@
         "watch": "esbuild src/index.ts --bundle --sourcemap --outdir=dist --platform=node --watch",
         "start": "node dist/index.js",
         "serve": "echo \"No serve script provided\"",
-        "clean": "del compiled types dist target build"
+        "clean": "del compiled types dist target build",
+        "dev": "esbuild src/index.ts --bundle --sourcemap --outdir=dist --platform=node --watch"
     }
 }

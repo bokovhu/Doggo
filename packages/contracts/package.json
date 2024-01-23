@@ -1,19 +1,37 @@
 {
     "name": "@doggo/contracts",
+    "description": "The contracts package",
     "version": "0.0.1",
-    "private": true,
     "main": "src/index.ts",
-    "dependencies": {},
+    "private": true,
+    "dependencies": {
+        "react": "*",
+        "react-dom": "*",
+        "three": "*",
+        "rxjs": "*",
+        "brain.js": "*",
+        "@polkadot/api": "*",
+        "@polkadot/api-contract": "*",
+        "@polkadot/extension-dapp": "*",
+        "commander": "*",
+        "marked": "*",
+        "marked-terminal": "*"
+    },
     "devDependencies": {
-        "concurrently": "*"
+        "@types/three": "*",
+        "@types/react": "*",
+        "@types/react-dom": "*",
+        "@types/marked-terminal": "*",
+        "typescript": "*",
+        "esbuild": "*",
+        "del-cli": "*"
     },
     "scripts": {
-        "node": "substrate-contracts-node --dev --base-path ./.node-data",
-        "cargo:contract-build": "cargo contract build --target wasm --release --manifest-path src/doggo/Cargo.toml",
-        "cargo:build": "cargo build --release",
-        "cargo:watch": "cargo watch -x \"contract build --target wasm --release --manifest-path src/doggo/Cargo.toml\"",
-        "build": "npm run cargo:build && npm run cargo:contract-build",
-        "watch": "npm run cargo:watch",
-        "dev": "concurrently \"npm run node\" \"npm run watch\""
+        "build": "cargo contract build --target wasm --release --manifest-path src/doggo/Cargo.toml",
+        "watch": "cargo watch -w src/ -x \"contract build --target wasm --release --manifest-path src/doggo/Cargo.toml\"",
+        "start": "echo \"No start script provided\"",
+        "serve": "substrate-contracts-node --dev --base-path ./.node-data",
+        "clean": "del compiled types dist target build",
+        "dev": "cargo watch -w src/ -x \"contract build --target wasm --release --manifest-path src/doggo/Cargo.toml\""
     }
 }

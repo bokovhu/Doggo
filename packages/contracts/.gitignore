@@ -1,3 +1,5 @@
-node-data/
-.node-data/
+compiled/
+types/
+dist/
 target/
+.node-data/
