@@ -1,14 +1,14 @@
 import { GameRandoms, GameRng } from "@doggo/game-random";
-import { UnitKind, CardEffectActivation, EffectKind, EffectTarget, GameCard, GameEffect, PlaneEffectActivation, GameCardRarity } from "./model";
+import { UnitKind, CardEffectTrigger, EffectKind, EffectTarget, GameCard, GameEffect, PlaneEffectTrigger, GameCardRarity } from "./model";
 
-const planeEffectActivations: PlaneEffectActivation[] = ["on-spawn", "on-killed", "on-target-killed", "every-turn"];
+const planeEffectTriggers: PlaneEffectTrigger[] = ["on-spawn"];
 const planeEffectTargets: EffectTarget[] = [
     "this-plane", "all-own-planes", "all-own-planes-of-kind", "some-own-planes", "some-own-planes-of-kind",
     "all-enemy-planes", "all-enemy-planes-of-kind", "some-enemy-planes", "some-enemy-planes-of-kind",
     "all-planes", "all-planes-of-kind", "some-planes", "some-planes-of-kind"
 ];
-const cardEffectActivations: CardEffectActivation[] = [
-    "once", "every-turn", "any-own-plane-killed", "any-enemy-plane-killed", "any-plane-killed",
+const cardEffectTriggers: CardEffectTrigger[] = [
+    "once", "any-own-plane-killed", "any-enemy-plane-killed", "any-plane-killed",
     "any-own-plane-of-kind-killed", "any-enemy-plane-of-kind-killed", "any-plane-of-kind-killed"
 ];
 const cardEffectTargets: EffectTarget[] = [
@@ -89,11 +89,11 @@ const unitKindBaseValues: Record<UnitKind, { hp: number, ap: number, dp: number,
         spawn: 7
     },
     helicopter: {
-        hp: 300,
+        hp: 200,
         ap: 14,
         dp: 3,
         man: 1,
-        spawn: 2
+        spawn: 3
     },
     bomber: {
         hp: 150,
@@ -122,16 +122,16 @@ export class GameCardGenerator {
 
     }
 
-    private generatePlaneEffect(rarity: CardRarity, rng: GameRng): GameEffect & { activation: PlaneEffectActivation } {
+    private generatePlaneEffect(rarity: CardRarity, rng: GameRng): GameEffect & { trigger: PlaneEffectTrigger } {
 
-        const activation = planeEffectActivations[Math.floor(rng() * planeEffectActivations.length)];
+        const trigger = planeEffectTriggers[Math.floor(rng() * planeEffectTriggers.length)];
         const target = planeEffectTargets[Math.floor(rng() * planeEffectTargets.length)];
 
         const shouldHaveTargetKind = target.includes("-of-kind");
         const targetKind = shouldHaveTargetKind ? unitKinds[Math.floor(rng() * unitKinds.length)] : undefined;
 
-        const shouldHaveActivationKind = activation.includes("-of-kind");
-        const activationKind = shouldHaveActivationKind ? unitKinds[Math.floor(rng() * unitKinds.length)] : undefined;
+        const shouldHaveTriggerKind = trigger.includes("-of-kind");
+        const triggerUnitKind = shouldHaveTriggerKind ? unitKinds[Math.floor(rng() * unitKinds.length)] : undefined;
 
         const shouldHaveTargetCount = target.includes("some-");
         const targetCount = shouldHaveTargetCount ? Math.floor(rng() * baseTargetCount * rarity.multipliers.targetCount) + 1 : undefined;
@@ -148,20 +148,20 @@ export class GameCardGenerator {
             default: throw new Error(`Unknown effect kind: ${kind}`);
         }
 
-        return { activation, target, targetKind, targetCount, kind, value, activationKind };
+        return { trigger, target, targetKind, targetCount, kind, value, triggerUnitKind };
     }
 
 
-    private generateCardEffect(rarity: CardRarity, rng: GameRng): GameEffect & { activation: CardEffectActivation } {
+    private generateCardEffect(rarity: CardRarity, rng: GameRng): GameEffect & { trigger: CardEffectTrigger } {
 
-        const activation = cardEffectActivations[Math.floor(rng() * cardEffectActivations.length)];
+        const trigger = cardEffectTriggers[Math.floor(rng() * cardEffectTriggers.length)];
         const target = cardEffectTargets[Math.floor(rng() * cardEffectTargets.length)];
 
         const shouldHaveTargetKind = target.includes("-of-kind");
         const targetKind = shouldHaveTargetKind ? unitKinds[Math.floor(rng() * unitKinds.length)] : undefined;
 
-        const shouldHaveActivationKind = activation.includes("-of-kind");
-        const activationKind = shouldHaveActivationKind ? unitKinds[Math.floor(rng() * unitKinds.length)] : undefined;
+        const shouldHaveTriggerKind = trigger.includes("-of-kind");
+        const triggerUnitKind = shouldHaveTriggerKind ? unitKinds[Math.floor(rng() * unitKinds.length)] : undefined;
 
         const shouldHaveTargetCount = target.includes("some-");
         const targetCount = shouldHaveTargetCount ? Math.floor(rng() * baseTargetCount * rarity.multipliers.targetCount) + 1 : undefined;
@@ -177,7 +177,7 @@ export class GameCardGenerator {
             case "affect-man": value = Math.floor(rng() * baseEffectValues.affectMan * rarity.multipliers.affectMan) + 1; break;
         }
 
-        return { activation, target, targetKind, targetCount, kind, value, activationKind };
+        return { trigger, target, targetKind, targetCount, kind, value, triggerUnitKind };
     }
 
 
@@ -202,7 +202,7 @@ export class GameCardGenerator {
 
         const amount = baseAttributes.spawn + Math.floor(rng() * baseAttributes.spawn);
 
-        const effects: Array<GameEffect & { activation: PlaneEffectActivation }> = [];
+        const effects: Array<GameEffect & { trigger: PlaneEffectTrigger }> = [];
 
         const effectCount = Math.floor((rarity.numEffects + 1) * rng());
         for (let i = 0; i < effectCount; i++) {
@@ -224,7 +224,7 @@ export class GameCardGenerator {
 
     private generateEffectCard(id: number, rarity: CardRarity, rng: GameRng): GameCard {
 
-        const effects: Array<GameEffect & { activation: CardEffectActivation }> = [];
+        const effects: Array<GameEffect & { trigger: CardEffectTrigger }> = [];
 
         const effectCount = 1 + Math.floor(rarity.numEffects * rng());
         for (let i = 0; i < effectCount; i++) {

@@ -44,6 +44,6 @@
         "build:contracts": "npm run -w @doggo/contracts build",
         "serve:node": "npm run -w @doggo/contracts node",
         "contracts:dev": "npm run -w @doggo/contracts dev",
-        "cardgame:test": "npm run -w @doggo/card-game build && npm run -w @doggo/cli build && npm run -w @doggo/cli start -- simulate 1,2,3,4,5,6 11,12,13,14,15,16 --seed 123 --output ../docs/02-Main/01-Milestone/02-Test-Match.md && npm run -w @doggo/cli start -- card-table 0 5000 --output ../docs/02-Main/01-Milestone/03-First-5000-Cards.md && npm run -w @doggo/cli start -- simulate 1,2,3,4,5,6 11,12,13,14,15,16 --seed 456 --output ../docs/02-Main/01-Milestone/02-Test-Match-456.md "
+        "cardgame:test": "npm run -w @doggo/cli start -- simulate 1,2,3,4,5,6 11,12,13,14,15,16 --seed 123 --output ../docs/02-Main/01-Milestone/02-Test-Match.md && npm run -w @doggo/cli start -- card-table 0 5000 --output ../docs/02-Main/01-Milestone/03-First-5000-Cards.md && npm run -w @doggo/cli start -- simulate 1,2,3,4,5,6 11,12,13,14,15,16 --seed 456 --output ../docs/02-Main/01-Milestone/02-Test-Match-456.md "
     }
 }

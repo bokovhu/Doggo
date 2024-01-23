@@ -1,21 +1,18 @@
-import { EffectActivation, EffectKind, EffectTarget, GameCard, GameEffect, GameEvent, GameEventKind, GameMatch, PlayerCommand, Unit } from "./model";
+import { EffectTrigger, EffectKind, EffectTarget, GameCard, GameEffect, GameEvent, GameEventKind, GameMatch, PlayerCommand, Unit } from "./model";
 
 function formatCardArray(cards: Array<GameCard>) {
     return cards.map((card, index) => `* **${index + 1}** (\`${card.id}\`): ${formatCardDescription(card)}`).join("\n");
 }
 
-const activationDescriptions: Record<EffectActivation, (eff: GameEffect) => string> = {
-    "every-turn": eff => `Every turn`,
-    "on-killed": eff => `When killed`,
+const triggerDescriptions: Record<EffectTrigger, (eff: GameEffect) => string> = {
     "on-spawn": eff => `When spawned`,
-    "on-target-killed": eff => `When killing a target`,
     "once": eff => `Once`,
     "any-own-plane-killed": eff => `When an own plane is killed`,
-    "any-own-plane-of-kind-killed": eff => `When an own ${eff.activationKind} plane is killed`,
+    "any-own-plane-of-kind-killed": eff => `When an own ${eff.triggerUnitKind} plane is killed`,
     "any-enemy-plane-killed": eff => `When an enemy plane is killed`,
-    "any-enemy-plane-of-kind-killed": eff => `When an enemy ${eff.activationKind} plane is killed`,
+    "any-enemy-plane-of-kind-killed": eff => `When an enemy ${eff.triggerUnitKind} plane is killed`,
     "any-plane-killed": eff => `When a plane is killed`,
-    "any-plane-of-kind-killed": eff => `When a ${eff.activationKind} plane is killed`,
+    "any-plane-of-kind-killed": eff => `When a ${eff.triggerUnitKind} plane is killed`,
 };
 const kindDescriptions: Record<EffectKind, (eff: GameEffect) => string> = {
     "direct-damage": eff => `Deals ${eff.value} damage`,
@@ -45,7 +42,7 @@ const eventKindDescription: Record<GameEventKind, (ev: GameEvent) => string> = {
     "commit-commands": ev => `:::details Player ${ev.player} commits their commands\n${formatPlayerCommandArray(ev.data.commands)}\n:::`,
     "add-to-playing-deck": ev => `:::details Player ${ev.player} adds a card to the playing deck\n${formatCardDescription(ev.data.command.card)}\n:::`,
     "shuffle-playing-deck": ev => `**The playing deck is shuffled.**`,
-    "play-card": ev => `:::::details Player ${ev.player} plays a card\n${formatCardDescription(ev.data.card)}\n:::::`,
+    "play-card": ev => `:::::::details Player ${ev.player} plays a card\n${formatCardDescription(ev.data.card)}\n`,
     "spawn-n-units": ev => `:::details Player ${ev.player} spawns ${ev.data.units.length} units\n${formatUnitArray(ev.data.units)}\n:::`,
     // "spawn-unit": ev => `:::details Player ${ev.player} spawns a unit\n${formatUnitDescription(ev.data.unit)}\n:::`,
     "spawn-unit": ev => `\n`,
@@ -54,13 +51,16 @@ const eventKindDescription: Record<GameEventKind, (ev: GameEvent) => string> = {
     "attack-unit": ev => `:::::details Player ${ev.player} attacks a unit\n:::info _Attacker_\n${formatUnitDescription(ev.data.unit)}\n:::\n:::danger _Target_\n${formatUnitDescription(ev.data.target)}\n:::\n:::info Damage\n_Damage Roll_: **${ev.data.damageRoll}**\n\n_Evasion Roll_: **${ev.data.evasionRoll}**\n\n_Damage Pool_ (_AP * Damage Roll_): **${ev.data.damagePool}**\n\n_Evasion Reduction_ (_MAN * Evasion Roll_): **${ev.data.evasionReduction}**\n\n_Target DP_: **${ev.data.target.dp}**\n\n_Applied Damage_: **${ev.data.appliedDamage}** (**${ev.data.hpBefore}** -> **${ev.data.hpAfter}**)\n:::\n:::::`,
     "kill-unit": ev => `:::details Player ${ev.player} kills a unit\n${formatUnitDescription(ev.data.unit)}\n:::`,
     "reinforce": ev => `:::details Player ${ev.player} reinforces their playing deck\n:::`,
-    "change-hp": ev => `:::details Player ${ev.player} changes a unit's HP\n:::`,
-    "change-ap": ev => `:::details Player ${ev.player} changes a unit's AP\n:::`,
-    "change-dp": ev => `:::details Player ${ev.player} changes a unit's DP\n:::`,
-    "change-man": ev => `:::details Player ${ev.player} changes a unit's MAN\n:::`,
-    "activate-effect": ev => `:::details Player ${ev.player} activates an effect\n${formatEffectDescription(ev.data.effect)}\n:::`,
+    "change-hp": ev => `:::details Player ${ev.player} changes a unit's HP\nTarget: ${formatUnitDescription(ev.data.unit)}\n\nHP: ${ev.data.hpBefore} -> ${ev.data.hpAfter} (${ev.data.hpAfter - ev.data.hpBefore})\n\n:::`,
+    "change-ap": ev => `:::details Player ${ev.player} changes a unit's AP\nTarget: ${formatUnitDescription(ev.data.unit)}\n\nAP: ${ev.data.apBefore} -> ${ev.data.apAfter} (${ev.data.apAfter - ev.data.apBefore})\n\n:::`,
+    "change-dp": ev => `:::details Player ${ev.player} changes a unit's DP\nTarget: ${formatUnitDescription(ev.data.unit)}\n\nDP: ${ev.data.dpBefore} -> ${ev.data.dpAfter} (${ev.data.dpAfter - ev.data.dpBefore})\n\n:::`,
+    "change-man": ev => `:::details Player ${ev.player} changes a unit's MAN\nTarget: ${formatUnitDescription(ev.data.unit)}\n\nMAN: ${ev.data.manBefore} -> ${ev.data.manAfter} (${ev.data.manAfter - ev.data.manBefore})\n\n:::`,
+    "activate-effect": ev => `:::::details Player ${ev.player} activates an effect\nEffect: ${formatEffectDescription(ev.data.effect)}\n\nTargets:\n\n${formatUnitArray(ev.data.targets)}\n\n`,
+    "end-effect-activate-consequences": ev => `:::::`,
     "win": ev => `**Player ${ev.player} wins the match${ev.data && ev.data.reason ? ` - ${ev.data.reason}` : ""}**`,
     "shuffle-units": ev => `**The units are shuffled.**`,
+    "play-effect": ev => `:::details Player ${ev.player} plays an effect\n${formatEffectDescription(ev.data.effect)}\n:::`,
+    "end-card-play": ev => `:::::::`
 };
 
 export function formatUnitDescription(unit: Unit) {
@@ -73,7 +73,7 @@ export function formatUnitArray(units: Array<Unit>) {
 
 export function formatEffectDescription(effect: GameEffect) {
 
-    const activationDescription = activationDescriptions[effect.activation](effect);
+    const triggerDescription = triggerDescriptions[effect.trigger](effect);
     const kindDescription = kindDescriptions[effect.kind](effect).toLowerCase()
         .replace(" ap ", " **AP** ")
         .replace(" dp ", " **DP** ")
@@ -81,7 +81,7 @@ export function formatEffectDescription(effect: GameEffect) {
         .replace(" hp ", " **HP** ");
     const targetDescription = targetDescriptions[effect.target](effect).toLowerCase();
 
-    return `${activationDescription}, ${kindDescription} to ${targetDescription}.`;
+    return `${triggerDescription}, ${kindDescription} to ${targetDescription}.`;
 }
 
 export function formatCardDescription(card: GameCard) {
@@ -126,11 +126,7 @@ export function formatGameMatch(match: GameMatch) {
 }
 
 export function formatPlayerCommand(command: PlayerCommand) {
-    if (command.column === undefined) {
-        return `Play card ${command.card.id} - ${formatCardDescription(command.card)}`;
-    } else {
-        return `Play card ${command.card.id} in column ${command.column} - ${formatCardDescription(command.card)}`;
-    }
+    return `Play card ${command.card.id} - ${formatCardDescription(command.card)}`;
 }
 
 export function formatPlayerCommandArray(commands: Array<PlayerCommand>) {

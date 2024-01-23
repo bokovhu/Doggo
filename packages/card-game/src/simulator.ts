@@ -38,8 +38,7 @@ export class GameSimulator {
         // let playerOneUnits: Array<Unit> = [];
         // let playerTwoUnits: Array<Unit> = [];
         let units: Array<Unit> = [];
-        let playerOneActivatedEffects: Array<GameEffect> = [];
-        let playerTwoActivatedEffects: Array<GameEffect> = [];
+        let playedEffects: Array<GameEffect & { _player: number, _unit?: number }> = [];
         let deadUnits: Set<number> = new Set();
         let startingUnitSize = -1;
         let consecutiveTieRounds = 0;
@@ -78,7 +77,123 @@ export class GameSimulator {
                 cardsAfter
             });
         };
-        const $play = (card: GameCard, player: number, column?: "A" | "B" | "C" | "D" | "E" | "F") => {
+        const $unit = (id: number) => units.find(u => u.id === id)!;
+        const $effectTargets = (effect: GameEffect, player: number, unit?: number) => {
+            let targets: Array<Unit> = [];
+            switch (effect.target) {
+                case "this-plane": targets = [$unit(unit!)]; break;
+                case "all-own-planes": targets = units.filter(u => u.owner === player); break;
+                case "all-own-planes-of-kind": targets = units.filter(u => u.owner === player && u.kind === effect.targetKind); break;
+                case "some-own-planes": targets = units.filter(u => u.owner === player).sort(() => rng() - 0.5).slice(0, effect.targetCount); break;
+                case "some-own-planes-of-kind": targets = units.filter(u => u.owner === player && u.kind === effect.targetKind).sort(() => rng() - 0.5).slice(0, effect.targetCount); break;
+                case "all-enemy-planes": targets = units.filter(u => u.owner !== player); break;
+                case "all-enemy-planes-of-kind": targets = units.filter(u => u.owner !== player && u.kind === effect.targetKind); break;
+                case "some-enemy-planes": targets = units.filter(u => u.owner !== player).sort(() => rng() - 0.5).slice(0, effect.targetCount); break;
+                case "some-enemy-planes-of-kind": targets = units.filter(u => u.owner !== player && u.kind === effect.targetKind).sort(() => rng() - 0.5).slice(0, effect.targetCount); break;
+                case "all-planes": targets = units; break;
+                case "all-planes-of-kind": targets = units.filter(u => u.kind === effect.targetKind); break;
+                case "some-planes": targets = units.sort(() => rng() - 0.5).slice(0, effect.targetCount); break;
+                case "some-planes-of-kind": targets = units.filter(u => u.kind === effect.targetKind).sort(() => rng() - 0.5).slice(0, effect.targetCount); break;
+                default: throw new Error(`Unknown effect target: ${effect.target}`);
+            }
+            return targets.filter(
+                t => !!t && !deadUnits.has(t.id)
+            );
+        }
+        const $activateEffect = (effect: GameEffect, player: number, unit?: number) => {
+
+            const targets = $effectTargets(effect, player, unit);
+
+            if (targets.length === 0) {
+                return;
+            }
+
+            $ev("activate-effect", {
+                effect: JSON.parse(JSON.stringify(effect)),
+                targets: JSON.parse(JSON.stringify(targets)),
+            }, player);
+
+            switch (effect.kind) {
+                case "direct-damage":
+                    targets.forEach(t => {
+                        t.hp -= effect.value;
+                        $ev("change-hp", {
+                            unit: JSON.parse(JSON.stringify(t)),
+                            hpBefore: t.hp + effect.value,
+                            hpAfter: t.hp
+                        }, t.owner);
+
+                        if (t.hp <= 0 && !deadUnits.has(t.id)) {
+                            $kill(t);
+                        }
+                    });
+                    break;
+                case "direct-heal":
+                    targets.forEach(t => {
+                        if (deadUnits.has(t.id)) {
+                            return;
+                        }
+
+                        t.hp += effect.value;
+                        $ev("change-hp", {
+                            unit: JSON.parse(JSON.stringify(t)),
+                            hpBefore: t.hp - effect.value,
+                            hpAfter: t.hp
+                        }, t.owner);
+                    });
+                    break;
+                case "affect-ap":
+                    targets.forEach(t => {
+                        if (deadUnits.has(t.id)) {
+                            return;
+                        }
+
+                        t.ap += effect.value;
+                        $ev("change-ap", {
+                            unit: JSON.parse(JSON.stringify(t)),
+                            apBefore: t.ap - effect.value,
+                            apAfter: t.ap
+                        }, t.owner);
+                    });
+                    break;
+                case "affect-dp":
+                    targets.forEach(t => {
+                        if (deadUnits.has(t.id)) {
+                            return;
+                        }
+
+                        t.dp += effect.value;
+                        $ev("change-dp", {
+                            unit: JSON.parse(JSON.stringify(t)),
+                            dpBefore: t.dp - effect.value,
+                            dpAfter: t.dp
+                        }, t.owner);
+                    });
+                    break;
+                case "affect-man":
+                    targets.forEach(t => {
+                        if (deadUnits.has(t.id)) {
+                            return;
+                        }
+
+                        t.man += effect.value;
+                        $ev("change-man", {
+                            unit: JSON.parse(JSON.stringify(t)),
+                            manBefore: t.man - effect.value,
+                            manAfter: t.man
+                        }, t.owner);
+
+                    });
+                    break;
+                default: throw new Error(`Unknown effect kind: ${effect.kind}`);
+            }
+
+            $ev("end-effect-activate-consequences", {
+                effect: JSON.parse(JSON.stringify(effect)),
+                targets: JSON.parse(JSON.stringify(targets)),
+            }, player);
+        };
+        const $play = (card: GameCard, player: number) => {
             $ev("play-card", {
                 card
             }, player);
@@ -86,6 +201,8 @@ export class GameSimulator {
             if (card.kind === "spawn") {
                 const spawnDetails = card.spawnDetails!;
                 const spawnedUnits: Array<Unit> = [];
+                const spawnEffectsToPlay: Array<GameEffect & { _player: number, _unit?: number }> = [];
+                const spawnEffectsToActivate: Array<GameEffect & { _player: number, _unit?: number }> = [];
                 for (let i = 0; i < spawnDetails.amount; i++) {
                     const unit: Unit = {
                         id: planeIdSequence++,
@@ -94,10 +211,6 @@ export class GameSimulator {
                         dp: spawnDetails.attributes.dp,
                         man: spawnDetails.attributes.man,
                         kind: spawnDetails.kind,
-                        position: [
-                            column!,
-                            player === 1 ? 1 : 4
-                        ],
                         owner: player,
                         target: -1
                     };
@@ -107,23 +220,66 @@ export class GameSimulator {
                     units.push(unit);
                     spawnedUnits.push(unit);
                     spawnedPlayers.add(player);
+
+                    for (let effect of spawnDetails.effects) {
+                        // Effects with the "Spawn" activation are activated here
+                        // Every other effect goes to the played effects list
+                        if (effect.trigger === "on-spawn") {
+                            spawnEffectsToActivate.push({
+                                ...JSON.parse(JSON.stringify(effect)),
+                                _player: player,
+                                _unit: unit.id
+                            });
+                        } else {
+                            spawnEffectsToPlay.push({
+                                ...JSON.parse(JSON.stringify(effect)),
+                                _player: player,
+                                _unit: unit.id
+                            });
+                        }
+                    }
                 }
                 $ev("spawn-n-units", {
                     units: JSON.parse(JSON.stringify(spawnedUnits))
                 }, player);
+
+                for (let effect of spawnEffectsToActivate) {
+                    $activateEffect(effect, player);
+                }
+
+                for (let effect of spawnEffectsToPlay) {
+                    $ev("play-effect", {
+                        effect: JSON.parse(JSON.stringify(effect))
+                    }, player);
+                    playedEffects.push({
+                        ...JSON.parse(JSON.stringify(effect)),
+                        _player: player
+                    });
+                }
             } else if (card.kind === "effect") {
                 const effectDetails = card.effectDetails!;
                 for (const effect of effectDetails.effects) {
-                    $ev("activate-effect", {
-                        effect: JSON.parse(JSON.stringify(effect))
-                    }, player);
-                    if (player === 1) {
-                        playerOneActivatedEffects.push(effect);
+                    // Effects with the "Once" activation are activated here
+                    // Every other effect goes to the played effects list
+                    if (effect.trigger === "once") {
+                        // Activate effect
+                        $activateEffect(effect, player);
                     } else {
-                        playerTwoActivatedEffects.push(effect);
+                        // Add to played effects list
+                        $ev("play-effect", {
+                            effect: JSON.parse(JSON.stringify(effect))
+                        }, player);
+                        playedEffects.push({
+                            ...JSON.parse(JSON.stringify(effect)),
+                            _player: player
+                        });
                     }
                 }
             }
+
+            $ev("end-card-play", {
+                card
+            }, player);
         };
         const $unitTargetPhase = (unit: Unit) => {
             // Check if unit is still alive
@@ -191,6 +347,35 @@ export class GameSimulator {
                 unit: JSON.parse(JSON.stringify(unit))
             }, unit.owner === 1 ? 2 : 1);
             deadUnits.add(unit.id);
+
+            // Play on-kill effects
+            const effectsToActivate: Array<GameEffect & { _player: number, _unit?: number }> = [];
+            for (let effect of playedEffects) {
+                if (effect.trigger === "any-plane-killed") {
+                    effectsToActivate.push(effect);
+                } else if (effect.trigger === "any-plane-of-kind-killed"
+                    && effect.targetKind === unit.kind) {
+                    effectsToActivate.push(effect);
+                } else if (effect.trigger === "any-own-plane-killed"
+                    && effect._player === unit.owner) {
+                    effectsToActivate.push(effect);
+                } else if (effect.trigger === "any-own-plane-of-kind-killed"
+                    && effect._player === unit.owner
+                    && effect.targetKind === unit.kind) {
+                    effectsToActivate.push(effect);
+                } else if (effect.trigger === "any-enemy-plane-killed"
+                    && effect._player !== unit.owner) {
+                    effectsToActivate.push(effect);
+                } else if (effect.trigger === "any-enemy-plane-of-kind-killed"
+                    && effect._player !== unit.owner
+                    && effect.targetKind === unit.kind) {
+                    effectsToActivate.push(effect);
+                }
+            }
+
+            for (let effect of effectsToActivate) {
+                $activateEffect(effect, effect._player, effect._unit);
+            }
         }
         const $unitKillPhase = (unit: Unit) => {
             if (deadUnits.has(unit.id)) {
@@ -239,8 +424,8 @@ export class GameSimulator {
 
             // If there are cards in the playing deck, play the top card
             if (playingDeck.length > 0) {
-                const { card, column, _player } = playingDeck.shift()!;
-                $play(card, _player, column);
+                const { card, _player } = playingDeck.shift()!;
+                $play(card, _player);
             }
 
             // Shuffle units

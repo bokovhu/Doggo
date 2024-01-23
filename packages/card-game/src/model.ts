@@ -1,7 +1,7 @@
 
 export type UnitKind = "fighter" | "helicopter" | "bomber";
 export type GameCardKind = "spawn" | "effect" | "nothing";
-export type EffectTarget = "this-plane" | // Effect is applied to the plane, that the effect is attached to
+export type EffectTargetOnUnitEffect = "this-plane" | // Effect is applied to the plane, that the effect is attached to
     "all-own-planes" | // Effect is applied to all own planes
     "all-own-planes-of-kind" | // Effect is applied to all own planes of a specific kind
     "some-own-planes" | // Effect is applied to some (N) own planes
@@ -14,24 +14,35 @@ export type EffectTarget = "this-plane" | // Effect is applied to the plane, tha
     "all-planes-of-kind" | // Effect is applied to all planes of a specific kind
     "some-planes" | // Effect is applied to some (N) planes
     "some-planes-of-kind"; // Effect is applied to some (N) planes of a specific kind
+export type EffectTargetOnPlayerEffect = "all-own-planes" | // Effect is applied to all own planes
+    "all-own-planes-of-kind" | // Effect is applied to all own planes of a specific kind
+    "some-own-planes" | // Effect is applied to some (N) own planes
+    "some-own-planes-of-kind" | // Effect is applied to some (N) own planes of a specific kind
+    "all-enemy-planes" | // Effect is applied to all enemy planes
+    "all-enemy-planes-of-kind" | // Effect is applied to all enemy planes of a specific kind
+    "some-enemy-planes" | // Effect is applied to some (N) enemy planes
+    "some-enemy-planes-of-kind" | // Effect is applied to some (N) enemy planes of a specific kind
+    "all-planes" | // Effect is applied to all planes
+    "all-planes-of-kind" | // Effect is applied to all planes of a specific kind
+    "some-planes" | // Effect is applied to some (N) planes
+    "some-planes-of-kind"; // Effect is applied to some (N) planes of a specific kind
+export type EffectTarget = EffectTargetOnUnitEffect | EffectTargetOnPlayerEffect;
 export type EffectKind = "direct-damage" | // Target is damaged for a fixed value
     "direct-heal" | // Target is healed for a fixed value
     "affect-ap" | // Target's AP is affected by a fixed value
     "affect-dp" | // Target's DP is affected by a fixed value
     "affect-man"; // Target's MAN is affected by a fixed value
-export type PlaneEffectActivation = "on-spawn" | // Effect is activated when the effect is attached to a plane, and the plane is spawned
-    "on-killed" | // Effect is activated when the effect is attached to a plane, and the plane is killed
-    "on-target-killed" | // Effect is activated when the effect is attached to a plane, and the plane kills a target
-    "every-turn"; // Effect is activated every turn
-export type CardEffectActivation = "once" | // Effect is activated once, at the beginning of the match
+export type PlaneEffectTrigger = "on-spawn";// Effect is activated when the effect is attached to a plane, and the plane is spawned
+// "on-killed" | // Effect is activated when the effect is attached to a plane, and the plane is killed
+// "on-target-killed"; // Effect is activated when the effect is attached to a plane, and the plane kills a target
+export type CardEffectTrigger = "once" | // Effect is activated once, at the beginning of the match
     "any-own-plane-killed" | // Effect is activated when any own plane is killed
     "any-own-plane-of-kind-killed" | // Effect is activated when any own plane of a specific kind is killed
     "any-enemy-plane-killed" | // Effect is activated when any enemy plane is killed
     "any-enemy-plane-of-kind-killed" | // Effect is activated when any enemy plane of a specific kind is killed
     "any-plane-killed" | // Effect is activated when any plane is killed
-    "any-plane-of-kind-killed" | // Effect is activated when any plane of a specific kind is killed
-    "every-turn"; // Effect is activated every turn
-export type EffectActivation = PlaneEffectActivation | CardEffectActivation;
+    "any-plane-of-kind-killed"; // Effect is activated when any plane of a specific kind is killed
+export type EffectTrigger = PlaneEffectTrigger | CardEffectTrigger;
 
 export interface GameEffect {
     /** The effect's target */
@@ -46,14 +57,24 @@ export interface GameEffect {
     /** The effect's kind */
     kind: EffectKind;
 
-    /** The effect's activation */
-    activation: EffectActivation;
+    /** The effect's trigger */
+    trigger: EffectTrigger;
 
     /** The activation plane argument, if any */
-    activationKind?: UnitKind;
+    triggerUnitKind?: UnitKind;
 
     /** The effect's value */
     value: number;
+}
+
+export type GameEffectOnUnit = GameEffect & {
+    trigger: PlaneEffectTrigger;
+    target: EffectTargetOnUnitEffect;
+}
+
+export type GameEffectOnPlayer = GameEffect & {
+    trigger: CardEffectTrigger;
+    target: EffectTargetOnPlayerEffect;
 }
 
 export interface GameCardSpawnDetails {
@@ -83,12 +104,12 @@ export interface GameCardSpawnDetails {
     };
 
     /** The card's generated effects, that are added to the plane's that are spawned. */
-    effects: Array<GameEffect & { activation: PlaneEffectActivation }>;
+    effects: Array<GameEffect & { trigger: PlaneEffectTrigger }>;
 }
 
 export interface GameCardEffectDetails {
     /** The card's generated effects */
-    effects: Array<GameEffect & { activation: CardEffectActivation }>;
+    effects: Array<GameEffect & { trigger: CardEffectTrigger }>;
 }
 
 export type GameCardRarity = "common" | "rare" | "legendary";
@@ -110,11 +131,6 @@ export interface GameCard {
     effectDetails?: GameCardEffectDetails;
 }
 
-export type GameCoordinates = [
-    "A" | "B" | "C" | "D" | "E" | "F",
-    1 | 2 | 3 | 4
-];
-
 export interface Unit {
     /** The id of the unit */
     id: number;
@@ -134,9 +150,6 @@ export interface Unit {
     /** The unit's manouverability */
     man: number;
 
-    /** The position of the plane */
-    position: GameCoordinates;
-
     /** The number of the player who owns this unit */
     owner: number;
 
@@ -153,6 +166,7 @@ export type GameEventKind = "begin-game" | // The game begins
     "spawn-n-units" | // N units are spawned
     "spawn-unit" | // A unit is spawned
     "activate-effect" | // An effect is activated
+    "play-effect" | // An effect is played (will be activated later)
     "change-hp" | // A unit's HP is changed
     "change-ap" | // A unit's AP is changed
     "change-dp" | // A unit's DP is changed
@@ -163,7 +177,9 @@ export type GameEventKind = "begin-game" | // The game begins
     "kill-unit" | // A unit is killed
     "reinforce" | // The playing deck is extended with a player's reinforcement card
     "shuffle-units" | // The units are shuffled
-    "win"; // A player wins the match
+    "win" | // A player wins the match
+    "end-card-play" | // A card's play effects are ended
+    "end-effect-activate-consequences"; // An effect's activate consequences are ended
 
 export interface GameEvent {
     /** The event's turn number */
@@ -185,9 +201,6 @@ export interface GameEvent {
 export interface PlayerCommand {
     /** The card that is selected by the player. */
     card: GameCard;
-
-    /** The target column in which the card's units will be spawned. */
-    column?: "A" | "B" | "C" | "D" | "E" | "F";
 }
 
 export interface GameMatch {
