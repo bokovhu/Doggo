@@ -1,0 +1,24 @@
+{
+    "name": "@doggo/contract-doggo-client",
+    "description": "The doggo smart contract",
+    "version": "0.0.1",
+    "main": "src/index.ts",
+    "private": true,
+    "dependencies": {
+        "@doggo/contract-dev-doggo": "*",
+        "@doggo/contract-prod-doggo": "*",
+        "@doggo/contract-doggo-api": "*"
+    },
+    "devDependencies": {
+        "typescript": "*",
+        "del-cli": "*"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w --preserveWatchOutput",
+        "start": "echo \"No start script provided\"",
+        "serve": "echo \"No serve script provided\"",
+        "clean": "del compiled types dist target build",
+        "dev": "echo \"No dev script provided\""
+    }
+}

@@ -1,0 +1,31 @@
+{
+    "name": "@doggo/contract-doggo-deployer",
+    "description": "The doggo smart contract",
+    "version": "0.0.1",
+    "main": "src/index.ts",
+    "private": true,
+    "dependencies": {
+        "@polkadot/api": "*",
+        "@polkadot/api-contract": "*",
+        "commander": "*"
+    },
+    "devDependencies": {
+        "typescript": "*",
+        "esbuild": "*",
+        "del-cli": "*",
+        "cpy": "*",
+        "concurrently": "*"
+    },
+    "scripts": {
+        "build:copy-contract-json": "cpy ../contracts/target/ink/doggo/doggo.contract ./src/contract.json",
+        "build:bundle": "esbuild --bundle src/index.ts --platform=node --target=es2017 --outfile=dist/index.js",
+        "build": "npm run build:copy-contract-json && npm run build:bundle",
+        "watch:bundle": "esbuild --bundle src/index.ts --platform=node --target=es2017 --outfile=dist/index.js --watch",
+        "watch:copy-contract-json": "echo \"No watch:copy-contract-json script provided\"",
+        "watch": "concurrently \"npm run watch:bundle\" \"npm run watch:copy-contract-json\" -n \"bundle,copy-contract-json\"",
+        "start": "node dist/index.js",
+        "serve": "echo \"No serve script provided\"",
+        "clean": "del compiled types dist target build",
+        "dev": "echo \"No dev script provided\""
+    }
+}

@@ -16,7 +16,8 @@
         "commander": "*",
         "marked": "*",
         "marked-terminal": "*",
-        "@doggo/card-game": "*"
+        "@doggo/card-game": "*",
+        "@doggo/contract-doggo-client": "*"
 
     },
     "devDependencies": {

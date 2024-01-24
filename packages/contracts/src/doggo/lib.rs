@@ -4,71 +4,70 @@ pub mod contract;
 
 #[ink::contract]
 pub mod doggo {
-    use crate::contract::generated::Error;
+    use crate::contract::Error;
+    use crate::contract::IDoggoContract;
 
-    #[ink(storage)]
-    pub struct DoggoContract {
-        // Variables for game ownership
-        owner: AccountId, // Owner of the contract
-        owner_set: bool, // Flag to check if owner has been set
-        owner_name: ink::prelude::string::String, // Name of the owner
+    // BEGIN Contract storage generated code
 
-        // Game membership
-        membership_price: Balance, // Price to become a member
-        membership_status: ink::storage::Mapping<AccountId, bool>, // Maps address to membership status
-        member_names: ink::storage::Mapping<AccountId, ink::prelude::string::String>, // Maps address to member name
-        some_vec: ink::prelude::vec::Vec<u32>,
-
-        // Variables for Game Card mechanisms
-        card_minting_price: Balance, // Price to mint a new card
-        card_id_counter: u32, // Counter to keep track of card IDs
-        card_owner_mapping: ink::storage::Mapping<u32, AccountId>, // Maps card ID to owner address
-        cards_of_owner_mapping: ink::storage::Mapping<AccountId, ink::prelude::vec::Vec<u32>>, // Maps owner address to card IDs
-
-    }
+#[ink(storage)]
+pub struct DoggoContract {
+    /// The account ID of the owner of this smart contract
+    owner_account_id: AccountId,
+    /// Whether the owner of this smart contract is set
+    owner_is_set: bool,
+    /// The price of membership
+    membership_price: Balance,
+    /// The membership status of an account
+    membership_status: ink::storage::Mapping<AccountId, u32>,
+    /// The price of minting a card
+    card_minting_price: Balance,
+    /// The counter for card IDs
+    card_id_counter: u32,
+    /// The mapping from card IDs to account IDs
+    card_owner_mapping: ink::storage::Mapping<u32, AccountId>,
+    /// The mapping from account IDs to card IDs
+    cards_of_owner_mapping: ink::storage::Mapping<AccountId, ink::prelude::vec::Vec<u32>>,
+}
+    // END Contract storage generated code
 
     impl DoggoContract {
-        /// Creates a new service contract.
+        /// Creates a new contract for the Doggo game
         #[ink(constructor)]
         pub fn new() -> Self {
-            let card_owner_mapping = ink::storage::Mapping::default();
-            let membership_status = ink::storage::Mapping::default();
-            let cards_of_owner_mapping = ink::storage::Mapping::default();
-            let member_names_mapping = ink::storage::Mapping::default();
-            let some_vec_init = ink::prelude::vec::Vec::new();
+            // BEGIN Contract impl constructor generated code
 
-            Self {
-                owner: AccountId::from([0xFF as u8; 32]),
-                owner_set: false,
-                owner_name: ink::prelude::string::String::from(""),
+let membership_status_init = ink::storage::Mapping::default();
+let card_owner_mapping_init = ink::storage::Mapping::default();
+let cards_of_owner_mapping_init = ink::storage::Mapping::default();
 
-                membership_price: 0,
-                membership_status: membership_status,
-                member_names: member_names_mapping,
-                some_vec: some_vec_init,
-
-                card_minting_price: 0,
-                card_id_counter: 0,
-                card_owner_mapping: card_owner_mapping,
-                cards_of_owner_mapping: cards_of_owner_mapping,
-            }
+Self {
+    owner_account_id: AccountId::from([0xFF as u8; 32]),
+    owner_is_set: false,
+    membership_price: 0,
+    membership_status: membership_status_init,
+    card_minting_price: 0,
+    card_id_counter: 0,
+    card_owner_mapping: card_owner_mapping_init,
+    cards_of_owner_mapping: cards_of_owner_mapping_init,
+}
+    // END Contract impl constructor generated code
         }
 
         /// Returns the owner of the contract.
         #[ink(message)]
         pub fn get_owner(&self) -> Result<AccountId, Error> {
-            Ok(self.owner)
+            Ok(self.owner_account_id)
         }
 
         /// Sets the owner of the contract.
         #[ink(message)]
         pub fn claim_ownership(&mut self) -> Result<(), Error> {
-            if self.owner_set {
+            if self.owner_is_set {
                 return Err(Error::OwnerIsAlreadySet);
             }
 
-            self.owner = self.env().caller();
-            self.owner_set = true;
+            self.owner_account_id = self.env().caller();
+            self.owner_is_set = true;
 
             Ok(())
         }
@@ -82,7 +81,7 @@ pub mod doggo {
         /// Sets the price to mint a new card.
         #[ink(message)]
         pub fn set_card_minting_price(&mut self, new_price: Balance) -> Result<(), Error> {
-            if self.env().caller() != self.owner {
+            if self.env().caller() != self.owner_account_id {
                 return Err(Error::NotTheOwner);
             }
 
@@ -101,7 +100,7 @@ pub mod doggo {
         #[ink(message, payable)]
         pub fn mint_card(&mut self) -> Result<(), Error> {
             // Check if caller is a member
-            if !self.membership_status.get(&self.env().caller()).unwrap_or(false) {
+            if self.membership_status.get(&self.env().caller()).unwrap_or(0) != 1 {
                 return Err(Error::NotAMember);
             }
 
@@ -140,6 +139,10 @@ pub mod doggo {
         /// Transfers a card to a new owner
         #[ink(message)]
         pub fn transfer_card(&mut self, card_id: u32, new_owner: AccountId) -> Result<(), Error> {
+            if self.membership_status.get(&self.env().caller()).unwrap_or(0) != 1 {
+                return Err(Error::NotAMember);
+            }
+
             if card_id >= self.card_id_counter {
                 return Err(Error::InvalidCardId);
             }
@@ -173,7 +176,7 @@ pub mod doggo {
         /// Sets the membership price.
         #[ink(message)]
         pub fn set_membership_price(&mut self, new_price: Balance) -> Result<(), Error> {
-            if self.env().caller() != self.owner {
+            if self.env().caller() != self.owner_account_id {
                 return Err(Error::NotTheOwner);
             }
 
@@ -184,8 +187,8 @@ pub mod doggo {
 
         /// Returns the membership status of an account.
         #[ink(message)]
-        pub fn get_membership_status(&self, account: AccountId) -> Result<bool, Error> {
-            Ok(self.membership_status.get(&account).unwrap_or(false))
+        pub fn get_membership_status(&self, account: AccountId) -> Result<u32, Error> {
+            Ok(self.membership_status.get(&account).unwrap_or(0))
         }
 
         /// Become a member
@@ -195,7 +198,7 @@ pub mod doggo {
                 return Err(Error::NotEnoughBalance);
             }
 
-            self.membership_status.insert(self.env().caller(), &true);
+            self.membership_status.insert(self.env().caller(), &1);
 
             Ok(())
         }
@@ -203,11 +206,11 @@ pub mod doggo {
         /// Ban a member
         #[ink(message)]
         pub fn ban_member(&mut self, account: AccountId) -> Result<(), Error> {
-            if self.env().caller() != self.owner {
+            if self.env().caller() != self.owner_account_id {
                 return Err(Error::NotTheOwner);
             }
 
-            self.membership_status.insert(account, &false);
+            self.membership_status.insert(account, &0);
 
             Ok(())
         }
