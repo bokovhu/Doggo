@@ -35,28 +35,10 @@ export function useCommandMemberStatus(
 
             } else {
 
-                if (!options.suri) {
-                    throw new Error("No SURI supplied, and no membership.json found.");
-                }
+                outMd("You are not a member yet. Please use the following command to become a member:");
+                outMd("```\n$ doggo become-member\n```");
 
-                logSystem("Loading contract for env " + options.env + " ...")
-
-                // Check contract with supplied SURI
-                doggoContract = await useDoggoFromSuri(options.env, options.suri);
-
-                logSystem("Loaded contract for env " + options.env + "!");
-
-                // Save membership.json
-
-                logSystem("Saving membership.json ...");
-
-                fs.mkdirSync(path.join(os.homedir(), ".doggo"), { recursive: true });
-                fs.writeFileSync(membershipPath, JSON.stringify({
-                    suri: options.suri,
-                    env: options.env,
-                }));
-
-                logSystem("Saved membership.json to " + membershipPath + "!");
+                return;
 
             }
 
@@ -65,13 +47,13 @@ export function useCommandMemberStatus(
                 accountId: doggoContract._user.address.toString()
             });
 
-            if (memberStatus === 1) {
+            if (`${memberStatus}` === "1") {
                 outMd("You are a member!");
                 outMd("You address is **" + doggoContract._user.address + "**");
             } else if (memberStatus === 0) {
                 outMd("You are a **BANNED** member!");
             } else {
-                outMd("You are not a member.");
+                outMd("You are **NOT** a member.");
             }
 
         });

@@ -3,14 +3,14 @@ import { Command } from "commander";
 import { logSystem, outMd } from "../logging";
 import { IDoggoContract } from "@doggo/contract-doggo-api";
 
-export function useCommandClaimOwnership(
+export function useCommandSetMembershipPrice(
     prog: Command
 ) {
-    prog.command("claim-ownership")
+    prog.command("set-membership-price <newPrice>")
         .option("-s, --suri <suri>", "The SURI of the user.", "//Alice")
         .option("-e, --env <env>", "The environment to use.", "dev")
         .description("Claims ownership of the game contract")
-        .action(async (options) => {
+        .action(async (newPrice, options) => {
 
             let doggoContract: (IDoggoContract & { _user: any }) | undefined = undefined;
             
@@ -19,19 +19,11 @@ export function useCommandClaimOwnership(
                 options.suri,
             );
 
-            logSystem("Claiming ownership of the game contract ...");
+            logSystem("Setting membership price to " + newPrice + " ...");
 
-            await doggoContract.claimOwnership({});
-
-            logSystem("Checking claimed ownership ...");
-
-            const ownerAccountId = await doggoContract.getOwner({});
-
-            if (ownerAccountId === doggoContract._user.address.toString()) {
-                outMd("You are the owner of the game contract!");
-            } else {
-                outMd("You are **NOT** the owner of the game contract.");
-            }
+            await doggoContract.setMembershipPrice({
+                membershipPrice: parseInt(`${newPrice}`)
+            });
 
         });
 }

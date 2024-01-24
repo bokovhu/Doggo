@@ -156,7 +156,8 @@ export interface IDoggoContract {
 
 
     mintCard (
-        opts: MintCardOpts
+        opts: MintCardOpts,
+        value: number
     ): Promise<MintCardReturn>;
 
 
@@ -181,7 +182,8 @@ export interface IDoggoContract {
 
 
     becomeMember (
-        opts: BecomeMemberOpts
+        opts: BecomeMemberOpts,
+        value: number
     ): Promise<BecomeMemberReturn>;
 
 
@@ -276,17 +278,28 @@ export class DoggoPolkadotJsContract implements IDoggoContract {
     async claimOwnership(
         opts: ClaimOwnershipOpts
     ): Promise<ClaimOwnershipReturn> {
-        const result = await this._contract.tx.claimOwnership(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            }        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.claimOwnership(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit
+                    }                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async getCardMintingPrice(
         opts: GetCardMintingPriceOpts
@@ -311,19 +324,30 @@ export class DoggoPolkadotJsContract implements IDoggoContract {
     async setCardMintingPrice(
         opts: SetCardMintingPriceOpts
     ): Promise<SetCardMintingPriceReturn> {
-        const result = await this._contract.tx.setCardMintingPrice(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            },
-            opts.cardMintingPrice
-        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.setCardMintingPrice(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit
+                    },
+                    opts.cardMintingPrice
+                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async getMembershipPrice(
         opts: GetMembershipPriceOpts
@@ -348,34 +372,58 @@ export class DoggoPolkadotJsContract implements IDoggoContract {
     async setMembershipPrice(
         opts: SetMembershipPriceOpts
     ): Promise<SetMembershipPriceReturn> {
-        const result = await this._contract.tx.setMembershipPrice(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            },
-            opts.membershipPrice
-        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.setMembershipPrice(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit
+                    },
+                    opts.membershipPrice
+                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async mintCard(
-        opts: MintCardOpts
+        opts: MintCardOpts,
+        value: number
     ): Promise<MintCardReturn> {
-        const result = await this._contract.tx.mintCard(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            }        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.mintCard(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit,
+                        value: `${value}`
+                    }                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async getCardOwner(
         opts: GetCardOwnerOpts
@@ -424,20 +472,31 @@ export class DoggoPolkadotJsContract implements IDoggoContract {
     async transferCard(
         opts: TransferCardOpts
     ): Promise<TransferCardReturn> {
-        const result = await this._contract.tx.transferCard(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            },
-            opts.cardId,
-            opts.newOwnerAccountId
-        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.transferCard(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit
+                    },
+                    opts.cardId,
+                    opts.newOwnerAccountId
+                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async getMembershipStatus(
         opts: GetMembershipStatusOpts
@@ -462,53 +521,88 @@ export class DoggoPolkadotJsContract implements IDoggoContract {
         return actualResult as GetMembershipStatusReturn;
     }
     async becomeMember(
-        opts: BecomeMemberOpts
+        opts: BecomeMemberOpts,
+        value: number
     ): Promise<BecomeMemberReturn> {
-        const result = await this._contract.tx.becomeMember(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            }        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.becomeMember(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit,
+                        value: `${value}`
+                    }                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async banMember(
         opts: BanMemberOpts
     ): Promise<BanMemberReturn> {
-        const result = await this._contract.tx.banMember(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            },
-            opts.accountId
-        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.banMember(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit
+                    },
+                    opts.accountId
+                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
     async unbanMember(
         opts: UnbanMemberOpts
     ): Promise<UnbanMemberReturn> {
-        const result = await this._contract.tx.unbanMember(
-            {
-                gasLimit: this._gasLimit,
-                storageDepositLimit: this._storageDepositLimit,
-            },
-            opts.accountId
-        ).signAndSend(this._user);
+        const result = await new Promise<any>(
+            async (resolve, reject) => {
+                await this._contract.tx.unbanMember(
+                    {
+                        gasLimit: this._gasLimit,
+                        storageDepositLimit: this._storageDepositLimit
+                    },
+                    opts.accountId
+                ).signAndSend(
+                    this._user,
+                    (res: any) => {
+                        if(res.status.isInBlock) {
+                            resolve(res);
+                        }
+                    }
+                );
+            }
+        );
 
-        const humanResult = result.toHuman() as any;
+        const humanResult = result.status.asInBlock.toHuman() as any;
 
-        // console.log('humanResult', humanResult);
+        console.log('humanResult', humanResult);
 
-        throw new Error('Not implemented');
+        return null as any;
     }
 
 }
