@@ -4,11 +4,11 @@ import {
 import {
     useDevDoggoContract,
     useDevDoggoEnv,
-} from '@doggo/contract-dev-doggo';
+} from '@doggo/contract-doggo-dev';
 import {
     useProdDoggoContract,
     useProdDoggoEnv,
-} from '@doggo/contract-prod-doggo';
+} from '@doggo/contract-doggo-prod';
 import {
     Keyring,
 } from "@polkadot/keyring";

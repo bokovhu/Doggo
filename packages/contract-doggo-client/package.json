@@ -1,12 +1,12 @@
 {
     "name": "@doggo/contract-doggo-client",
-    "description": "The doggo smart contract",
+    "description": "The doggo smart contract client - a Node.JS client for using the contract from code",
     "version": "0.0.1",
     "main": "src/index.ts",
     "private": true,
     "dependencies": {
-        "@doggo/contract-dev-doggo": "*",
-        "@doggo/contract-prod-doggo": "*",
+        "@doggo/contract-doggo-dev": "*",
+        "@doggo/contract-doggo-prod": "*",
         "@doggo/contract-doggo-api": "*"
     },
     "devDependencies": {

@@ -1,16 +1,20 @@
 {
-    "name": "@doggo/contract-doggo-api",
-    "description": "The doggo smart contract API, contains request/response types for the contract, and an interface",
+    "name": "@doggo/contract-doggo-prod",
+    "description": "The doggo smart contract PROD env package - partly generated, allows interaction with the deployed PROD contract",
     "version": "0.0.1",
     "main": "src/index.ts",
     "private": true,
     "dependencies": {
         "@polkadot/api": "*",
-        "@polkadot/api-contract": "*"
+        "@polkadot/api-contract": "*",
+        "commander": "*"
     },
     "devDependencies": {
         "typescript": "*",
-        "del-cli": "*"
+        "esbuild": "*",
+        "del-cli": "*",
+        "cpy": "*",
+        "concurrently": "*"
     },
     "scripts": {
         "build": "tsc",

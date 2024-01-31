@@ -1,32 +1,21 @@
 {
-    "name": "@doggo/card-game",
-    "description": "The card game simulation package, contains model types for the game logic, the game logic simulation, and text-based formatters",
+    "name": "@doggo/contract-doggo-dev",
+    "description": "The doggo smart contract DEV env package - partly generated, allows interaction with the deployed DEV contract",
     "version": "0.0.1",
     "main": "src/index.ts",
     "private": true,
     "dependencies": {
-        "react": "*",
-        "react-dom": "*",
-        "three": "*",
-        "rxjs": "*",
-        "brain.js": "*",
         "@polkadot/api": "*",
         "@polkadot/api-contract": "*",
-        "@polkadot/extension-dapp": "*",
         "commander": "*",
-        "marked": "*",
-        "marked-terminal": "*",
-        "@doggo/game-random": "*"
-
+        "@doggo/contract-doggo-api": "*"
     },
     "devDependencies": {
-        "@types/three": "*",
-        "@types/react": "*",
-        "@types/react-dom": "*",
-        "@types/marked-terminal": "*",
         "typescript": "*",
         "esbuild": "*",
-        "del-cli": "*"
+        "del-cli": "*",
+        "cpy": "*",
+        "concurrently": "*"
     },
     "scripts": {
         "build": "tsc",

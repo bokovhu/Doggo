@@ -73,14 +73,6 @@ https://cloud-images.ubuntu.com/wsl/jammy/20240117/ubuntu-jammy-wsl-amd64-wsl.ro
 In this section we give detailed information about the _design_ of all packages in the project.
 :::
 
-### `@doggo/web`
-
-It contains the web application package, which is the game itself. It is a PWA, and it is built with React.
-
-### `@doggo/app`
-
-It contains the `<App />` component of the application, which is the _first page_ of the application (main menu).
-
 ### `@doggo/card-game`
 
 It contains the card game simulation, usable both in the browser and in the backend. Usage:

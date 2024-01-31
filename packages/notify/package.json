@@ -1,0 +1,14 @@
+{
+    "name": "@doggo/notify",
+    "version": "0.0.1",
+    "private": true,
+    "description": "Allows notification of the developer on build events (on the desktop)",
+    "dependencies": {},
+    "devDependencies": {
+        "node-notifier": "*",
+        "commander": "*"
+    },
+    "scripts": {
+        "start": "node index.js"
+    }
+}

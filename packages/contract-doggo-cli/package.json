@@ -1,0 +1,30 @@
+{
+    "name": "@doggo/contract-doggo-cli",
+    "description": "The doggo smart contract CLI - a runnable CLI app for interacting with the contract",
+    "version": "0.0.1",
+    "main": "src/index.ts",
+    "private": true,
+    "dependencies": {
+        "@doggo/contract-doggo-client": "*",
+        "@doggo/contract-doggo-api": "*",
+        "commander": "*",
+        "@doggo/card-game": "*"
+    },
+    "devDependencies": {
+        "typescript": "*",
+        "del-cli": "*",
+        "pkg": "*"
+    },
+    "scripts": {
+        "build:bundle": "esbuild --bundle src/index.ts --platform=node --target=es2017 --outfile=dist/index.js",
+        "build": "npm run build:bundle",
+        "watch:bundle": "esbuild --bundle src/index.ts --platform=node --target=es2017 --outfile=dist/index.js --watch",
+        "watch": "npm run watch:bundle",
+        "start": "node dist/index.js",
+        "serve": "echo \"No serve script provided\"",
+        "clean": "del compiled types dist target build",
+        "dev": "echo \"No dev script provided\"",
+        "package": "pkg dist/index.js --targets node18-linux-x64,node18-win-x64 --output ../../dist/doggo-cli",
+        "install:linux": "rm -f /usr/local/bin/doggo && cp ../../dist/doggo-cli-linux /usr/local/bin/doggo && chmod +x /usr/local/bin/doggo"
+    }
+}

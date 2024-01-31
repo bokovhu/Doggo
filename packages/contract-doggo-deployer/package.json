@@ -1,6 +1,6 @@
 {
     "name": "@doggo/contract-doggo-deployer",
-    "description": "The doggo smart contract",
+    "description": "The doggo smart contract deployer - a CLI app, that deploys the contract, and generates code with the deployed address",
     "version": "0.0.1",
     "main": "src/index.ts",
     "private": true,
@@ -17,7 +17,7 @@
         "concurrently": "*"
     },
     "scripts": {
-        "build:copy-contract-json": "cpy ../contracts/target/ink/doggo/doggo.contract ./src/contract.json",
+        "build:copy-contract-json": "node -e \"const fs = require('fs'); const path = require('path'); const contractJson = JSON.parse(fs.readFileSync(path.join(__dirname, '../contract-doggo-rust/target/ink/doggo/doggo.contract')).toString('utf-8')); fs.writeFileSync(path.join(__dirname, 'src', 'contract.json'), JSON.stringify(contractJson, null, 2));\"",
         "build:bundle": "esbuild --bundle src/index.ts --platform=node --target=es2017 --outfile=dist/index.js",
         "build": "npm run build:copy-contract-json && npm run build:bundle",
         "watch:bundle": "esbuild --bundle src/index.ts --platform=node --target=es2017 --outfile=dist/index.js --watch",

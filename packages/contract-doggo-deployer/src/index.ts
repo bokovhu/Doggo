@@ -183,6 +183,12 @@ async function main() {
 }
 
 main().then(
-    () => console.log(`✅ Finished successfully.`),
-    (err) => console.log(`❌ Fatal error!`, err)
+    () => {
+        console.log(`✅ Finished successfully.`);
+        process.exit(0);
+    },
+    (err) => {
+        console.error(`❌ Finished with error: ${err}`);
+        process.exit(1);
+    }
 );

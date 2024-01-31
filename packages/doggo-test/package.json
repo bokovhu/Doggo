@@ -1,0 +1,10 @@
+{
+    "name": "@doggo/doggo-test",
+    "private": true,
+    "version": "0.0.1",
+    "description": "Contains the script to render the demo (and test the app as well)",
+    "scripts": {
+        "test:demo": "rm -f demo.rec demo.mp4 demo.gif && asciinema rec demo.rec -c \"bash --login -i demo.sh\" && agg demo.rec demo.gif --idle-time-limit 1 --theme monokai --font-size 14 && ffmpeg -i demo.gif -movflags faststart -pix_fmt yuv420p -vf \"scale=trunc(iw/2)*2:trunc(ih/2)*2\" demo.mp4 && npm run -w @doggo/notify start -- -t \"@doggo/doggo-test\" -m \"Demo finished.\"",
+        "exec:demo": "clear && echo \"*** DEMO STARTING ***\" && bash -c \"export AUTOMATED_RECORDING=\"1\"\nsource demo.sh\""
+    }
+}

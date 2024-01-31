@@ -1,0 +1,9 @@
+{
+    "name": "@doggo/contract-node",
+    "version": "0.0.1",
+    "description": "Allows running a local Substrate Contract Node for testing",
+    "private": true,
+    "scripts": {
+        "start": "substrate-contracts-node --dev --base-path ./.node-data"
+    }
+}

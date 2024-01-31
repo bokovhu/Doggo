@@ -1,0 +1,26 @@
+{
+    "name": "@doggo/app-doggo-battle-ui",
+    "description": "Web-based battle UI for Doggo - shows the status, and simulation for the given challenge",
+    "version": "0.0.1",
+    "main": "src/index.tsx",
+    "private": true,
+    "dependencies": {
+        "react": "*",
+        "react-dom": "*",
+        "@doggo/contract-doggo-api": "*",
+        "@doggo/contract-doggo-client": "*",
+        "@doggo/contract-doggo-client-web3": "*"    },
+    "devDependencies": {
+        "typescript": "*",
+        "esbuild": "*",
+        "del-cli": "*"
+    },
+    "scripts": {
+        "build": "esbuild --bundle src/index.tsx --platform=browser --target=es2017 --jsx=automatic --outfile=dist/index.js",
+        "watch": "esbuild --bundle src/index.tsx --platform=browser --target=es2017 --jsx=automatic --outfile=dist/index.js --watch",
+        "start": "echo \"No start script provided\"",
+        "serve": "esbuild --bundle src/index.tsx --platform=browser --target=es2017 --jsx=automatic --outfile=dist/index.js --serve=0.0.0.0:4000 --servedir=dist",
+        "clean": "del compiled types dist target build",
+        "dev": "echo \"No dev script provided\""
+    }
+}

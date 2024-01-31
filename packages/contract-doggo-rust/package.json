@@ -1,0 +1,17 @@
+{
+    "name": "@doggo/contract-doggo-rust",
+    "description": "The doggo smart contract rust - contains the ink! contract",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {},
+    "devDependencies": {
+        "del-cli": "*"
+    },
+    "scripts": {
+        "build": "cargo contract build --target wasm --release --manifest-path src/doggo/Cargo.toml",
+        "watch": "echo \"No watch script provided\"",
+        "start": "echo \"No start script provided\"",
+        "serve": "substrate-contracts-node --dev --base-path ./.node-data",
+        "clean": "del compiled types dist target build .node-data"
+    }
+}
