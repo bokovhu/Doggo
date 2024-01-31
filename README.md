@@ -69,6 +69,12 @@ Doggo is a dogfighting simulation card game, where cards are NFTs on the blockch
     * The _contract owner_ is a _single entity_ responsible for running the simulations, and recording the winners
     * When _recording the winner_ of a challenge, the _card transfer_ is immediately executed
     * Challenges may also contain a _token pot_ (in the native tokens), which is _transferred_ to the winner
+* The game is built as a _CLI application_, and a set of _web micro-sites_ ...
+    * A number of _client libraries_ are generated from the _Smart Contract's features_ ...
+        * The `@doggo/contract-doggo-client` package is a _Node.JS client library_ for the contract (e.g. backend, CLI, etc.)
+        * The `@doggo/contract-doggo-client-web3` package is a _browser JS client library_ for the contract
+    * The micro-sites receive parameters in the _hash string_, and can be served from CDNs
+    * The CLI application allows _calling **any** message in the contract_, and also contains _custom commands_
 
 ### Quickstart
 
