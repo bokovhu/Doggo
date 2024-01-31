@@ -16,11 +16,29 @@
   </p>
 </div>
 
-### Screenshot
+### Screenshots
 
-![Screenshot]()
+* The app supports `--help`, which makes it completely _self-documenting_
 
-w.i.p.
+![This GIF shows the help option for various commands](cmd-help.gif)
+
+* The Smart Contract stores ownership of cards, and one feature of the app is that it allows interacting with this contract
+
+![This GIF shows how to get the owner account ID of a card](cmd-get-card-owner.gif)
+
+![This GIF shows how to get all owned cards of an account](cmd-get-cards-of-owner.gif)
+
+* The app also supports _minting_ new cards
+
+![This GIF shows how to mint a new card](cmd-mint.gif)
+
+* The app also supports _transferring_ (gifting) cards to other accounts
+
+![This GIF shows how to transfer a card to another account](cmd-transfer-card.gif)
+
+* The app supports the `--result-json` flag to output the result of a command in JSON format (which is useful for scripting)
+
+![This GIF shows various use-cases of the JSON output](cmd-json.gif)
 
 ### Summary
 

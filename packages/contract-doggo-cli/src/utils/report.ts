@@ -40,7 +40,7 @@ export const reportChallenges = (challenges: Array<any>) => {
 };
 
 export const reportMember = (accountId: string) => {
-    outResult(`URL`, MICRO_APPS.memberDetails({ accountId }));
+    outResult(`ACCOUNTID`, accountId, `URL`, MICRO_APPS.memberDetails({ accountId }));
 };
 
 export const reportAny = (data: any) => {
