@@ -30,9 +30,17 @@ Doggo is a dogfighting simulation card game, where cards are NFTs on the blockch
 
 First, refer to the [Assembling the development environment](./packages/docs/02-Main/01-DevEnv.md) guide to get all the tools you need to play with the project.
 
+![](./quickstart.gif)
+
 To build & test the app locally, you need to do a following:
 
-* Open a **new terminal**, and run the following command in it to start the _Substrate Contract Node_ in the background
+* Open a **new terminal**, and run the following command in it before anything else to install NPM dependencies
+
+```bash
+npm install
+```
+
+* In the _same terminal_, run the following command in it to start the _Substrate Contract Node_ in the background
 
 ```bash
 npm run dev:contract-node

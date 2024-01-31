@@ -1,4 +1,4 @@
-export const PROD_CONTRACT_ADDRESS = "5DB7pvfWbysmyncLwhCaT1JxwNAqJ92GC4wVQt8K4KQQkSJk";
+export const PROD_CONTRACT_ADDRESS = "5De366FGAaoDQjSUFdPPUZwemGjY3EWrLTjFdhsPYx49gDSR";
 export const PROD_CONTRACT_NODE_URL = "ws://127.0.0.1:9944";
 export const PROD_CONTRACT_ABI = {
     "source": {

@@ -37,7 +37,7 @@
         "build:docs": "npm run -w @doggo/docs build",
         "clean": "concurrently \"npm run clean:lib\" \"npm run clean:product\"",
         "cli": "npm run -w @doggo/cli start",
-        "dev:contract-node": "npm run -w @doggo/contract-node serve",
+        "dev:contract-node": "npm run -w @doggo/contract-node start",
         "dev:docs": "npm run -w @doggo/docs dev",
         "dev": "concurrently \"npm run dev:docs\" \"npm run dev:contract-node\" -n \"docs,contract-node\"",
         "build:doggo": "npm run -w @doggo/contract-doggo-rust build && npm run -w @doggo/contract-doggo-deployer build && npm run -w @doggo/contract-doggo-cli build",
