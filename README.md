@@ -40,6 +40,16 @@
 
 ![This GIF shows various use-cases of the JSON output](cmd-json.gif)
 
+* The app supports _rendering battles to markdown_, here are a few examples of that
+
+![A table of the first 10 mintable cards in the game](nice-first-10-cards.png)
+
+![The beginning of a match](nice-match-begin.png)
+
+![Simulated fighting in a match](nice-match-attack-gameplay.png)
+
+![An effect card being played](nice-match-effect-card.png)
+
 ### Summary
 
 Doggo is a dogfighting simulation card game, where cards are NFTs on the blockchain.
