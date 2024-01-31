@@ -10,7 +10,7 @@
     .
     <a href="">Live</a>
     ·
-    <a href="">Youtube</a>
+    <a href="https://www.youtube.com/watch?v=A6L_228WgeQ">Youtube</a>
     ·
     <a href="https://github.com/bokovhu/doggo">Code</a>
   </p>
