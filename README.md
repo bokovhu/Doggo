@@ -8,8 +8,6 @@
         <br />
     <a href="https://ctrlhackzk-doggo-docs.surge.sh">Docs</a>
     .
-    <a href="">Live</a>
-    ·
     <a href="https://www.youtube.com/watch?v=A6L_228WgeQ">Youtube</a>
     ·
     <a href="https://github.com/bokovhu/doggo">Code</a>
