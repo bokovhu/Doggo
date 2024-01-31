@@ -44,6 +44,32 @@
 
 Doggo is a dogfighting simulation card game, where cards are NFTs on the blockchain.
 
+* After you _become a member_, you can _obtain cards_ to play with them in various ways:
+    * You can _mint cards_ for yourself; you have to pay the _minting fee_, after which you receive a brand-new _random generated card_, that is _unique in the world_.
+    * You can ask other members to _gift you cards_; you have the right to _transfer_ any of your cards to _other members_.
+    * You can _win cards_ from other members in _battles_; _challenge_ a member, place your _bet_, and _ask_ for cards in return. If you win the battle, your opponent's cards are yours, but if you loose, you loose your bet.
+* You can _challenge_ other members, to play _battles_, and you can use _your own cards_ in these battles.
+* There are _two types of cards_ ...
+    * _Unit cards_ spawn various units to fight for you in the battle field. They may also contain _effects_, which are applied to _each spawned unit_.
+    * _Effect cards_ contain one or more _effects_, which somehow affect the battle
+* The game uses a _deterministic simulation_ to calculate the outcome of battles; the same _match seed_ results in the same _list of events_. Here's how the game works:
+    * First, the _6 submitted cards_ of each player are shuffled into the _playing deck_.
+    * Then the game is played in turns ...
+    * First, the top card of the playing deck is drawn, and it is played instantly ...
+        * If it is a _unit card_, the units on it are spawned (we check for each already played effects, and activate them as necessary)
+        * If it is an _effect card_, the effect is played
+    * Then, units without a target _find a new target_ (randomly)
+    * Then, _units are shuffled_
+    * Then, each unit _attacks their target_ ...
+        * The damage is calculated using the _current stats_ of the units, and _random rolls_ for _attacking_ and _defending_
+        * If the target is _killed_, the unit is _removed_ from the battlefield (we check for each already played effects, and activate them as necessary)
+    * Then, the _next turn_ begins
+    * If a player _runs out of units_, the other player wins
+* The Smart Contract of the game makes sure, that _fair-play is applied_ ...
+    * The _contract owner_ is a _single entity_ responsible for running the simulations, and recording the winners
+    * When _recording the winner_ of a challenge, the _card transfer_ is immediately executed
+    * Challenges may also contain a _token pot_ (in the native tokens), which is _transferred_ to the winner
+
 ### Quickstart
 
 First, refer to the [Assembling the development environment](./packages/docs/02-Main/01-DevEnv.md) guide to get all the tools you need to play with the project.
