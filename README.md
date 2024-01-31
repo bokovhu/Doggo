@@ -6,7 +6,7 @@
   <p align="center">
   Aleph Hack
         <br />
-    <a href="">Docs</a>
+    <a href="https://ctrlhackzk-doggo-docs.surge.sh">Docs</a>
     .
     <a href="">Live</a>
     ·
